@@ -1,0 +1,32 @@
+Genres:
+
+0: \N
+a: Action
+b: Adventure
+c: Adult
+d: Animation
+e: Biography
+f: Comedy
+g: Crime
+h: Documentary
+i: Drama
+j: Family
+k: Fantasy
+l: Film-Noir
+m: Game-Show
+n: History
+o: Horror
+p: Music
+q: Musical
+r: Mystery
+s: News
+t: Romance
+u: Reality-TV
+v: Sci Fi
+w: Short
+x: Sport
+y: Superhero
+z: Talk-Show
+A: Thriller
+B: War
+C: Western
