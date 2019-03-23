@@ -1,21 +1,20 @@
 typedef struct {
   int     tconst;
-  //char    titleType;     //abbreviating title types as chars
-  char  primaryTitle[300];
-  char  originalTitle[300];
-  int    isAdult;
+  char    primaryTitle[300];
+  char    originalTitle[300];
+  int     isAdult;
   int     startYear;
-  //int     endYear;
   int     runtime;
-  char  genres[10];      //abbreviating genres as chars
-  //char  *directors;
-  //char  *writers;
+  char    genres[10];      //abbreviating genres as chars
+  int     height;
+  Movie   *left;
+  Movie   *Right;
 } Movie;
 
 typedef struct {
-  int tconst;
-  //char viewStatus;    //wishlist, viewed
-  char ownershipType;   //phyiscal, digital
+  int     tconst;
+  char    ownershipType;   //phyiscal, digital
+  //char    dateAquired;
 } UserMovie;
 
 char *userLogin();
@@ -23,6 +22,22 @@ char *userLogin();
 Movie *readFromFile();
 
 void printMovies(Movie *movieList);
+
+int height(Movie *N);
+
+int max(int a, int b);
+
+Movie *newNode(int key);
+
+Movie *rightRotate(Movie *y);
+
+Movie *leftRotate(Movie *x);
+
+int getBalance(Movie *N);
+
+Movie *insert(Movie* node, int key);
+
+void preOrder(Movie *root);
 
 void searchPrint(int *tconstArray, Movie *movieList);
 

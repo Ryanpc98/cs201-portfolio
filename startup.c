@@ -449,7 +449,7 @@ Movie *readFromFile() {
       }
       newMovie->genres[varPos] = '0';
 
-      movieList[numMovies] = *newMovie;
+      insertToTree(newMovie);
       numMovies++;
     }
   }
