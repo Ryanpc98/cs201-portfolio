@@ -1,6 +1,7 @@
 // C program to insert a node in AVL tree
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 //Code for AVL tree from:
   //https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
@@ -111,18 +112,17 @@ Movie* insert(Movie* node, char *title) {
   int titLen =  strlen(title);
     /* 1.  Perform the normal BST insertion */
     if (node == NULL)
-        return(newNode(key));
+        return(newNode(title));
 
     if (strncmp(title, node->primaryTitle, titLen) < 0)
-        node->left  = insert(node->left, key);
-    else if (title, strncmp(node->primaryTitle, titLen) > 0)
-        node->right = insert(node->right, key);
+        node->left  = insert(node->left, title);
+    else if (strncmp(title, node->primaryTitle, titLen) > 0)
+        node->right = insert(node->right, title);
     else // Equal keys are not allowed in BST
         return node;
 
     /* 2. Update height of this ancestor node */
-    node->height = 1 + max(height(node->left),
-                           height(node->right));
+    node->height = 1 + max(height(node->left), height(node->right));
 
     /* 3. Get the balance factor of this ancestor
           node to check whether this node became
@@ -133,22 +133,22 @@ Movie* insert(Movie* node, char *title) {
     // there are 4 cases
 
     // Left Left Case
-    if (balance > 1 && key < node->left->key)
+    if (balance > 1 && strncmp(title, node->left->primaryTitle, titLen) < 0)
         return rightRotate(node);
 
     // Right Right Case
-    if (balance < -1 && key > node->right->key)
+    if (balance < -1 && strncmp(title, node->right->primaryTitle, titLen) > 0)
         return leftRotate(node);
 
     // Left Right Case
-    if (balance > 1 && key > node->left->key)
+    if (balance > 1 && strncmp(title, node->right->primaryTitle, titLen) > 0)
     {
         node->left =  leftRotate(node->left);
         return rightRotate(node);
     }
 
     // Right Left Case
-    if (balance < -1 && key < node->right->key)
+    if (balance < -1 && strncmp(title, node->right->primaryTitle, titLen) < 0)
     {
         node->right = rightRotate(node->right);
         return leftRotate(node);
@@ -169,7 +169,7 @@ void preOrder(Movie *root)
 {
     if(root != NULL)
     {
-        printf("%d ", root->key);
+        printf("%d ", root->primaryTitle);
         preOrder(root->left);
         preOrder(root->right);
     }
