@@ -14,7 +14,7 @@ int main(void) {
   //userFilename = userLogin();
 
   Movie *movieList;
-  movieList = createTconstList();
+  movieList = readFromFile();
 
   int *titleSearchArray;
   int *genreSearchArray;

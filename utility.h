@@ -20,7 +20,7 @@ typedef struct {
 
 char *userLogin();
 
-Movie *createTconstList();
+Movie *readFromFile();
 
 void printMovies(Movie *movieList);
 

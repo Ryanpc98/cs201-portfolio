@@ -98,7 +98,7 @@ char *userLogin() {
 /*                                                                            */
 /******************************************************************************/
 
-Movie *createTconstList() {
+Movie *readFromFile() {
 
   FILE *fp;
   fp = fopen("title.basics.tsv", "r");
