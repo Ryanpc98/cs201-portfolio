@@ -114,7 +114,7 @@ Movie *readFromFile() {
   char tempRuntime[4];
   char currLine[500];
   int numMovies;
-  static Movie movieList[1000000];
+  Movie *root;
 
   printf("Loading Movie Data...\n");
   while (!feof(fp)) {
@@ -145,7 +145,7 @@ Movie *readFromFile() {
         varPos++;
       }
       newMovie->primaryTitle[varPos] = '\0';
-
+      
       /* Find originalTitle */
       linePos++;
       varPos = 0;
@@ -447,9 +447,19 @@ Movie *readFromFile() {
           break;
         }
       }
-      newMovie->genres[varPos] = '0';
+      newMovie->genres[varPos] = '\0';
 
-      insertToTree(newMovie);
+      //printf("%s\n", newMovie->primaryTitle);
+      //preOrder(root);
+
+      newMovie->left = NULL;
+      newMovie->right = NULL;
+      newMovie->height = 1;
+
+      root = insert(root, newMovie);
+      //printf("root: %s\n", root->primaryTitle);
+      //preOrder(root);
+      //printf("\n\n");
       numMovies++;
     }
   }
@@ -457,26 +467,9 @@ Movie *readFromFile() {
   printf("\nnum movies: %d\n", numMovies);
   fclose(fp);
 
-  movieList[numMovies].tconst = -1; /* change to insert function */
-
-  return movieList; /* return node */
+  return root;
 }
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
-
-void printMovies(Movie *movieList) { /* rework to linked list */
-  int i = 0;
-  while(movieList[i].tconst != -1) {
-    printf("%d: %s (%s)\n", movieList[i].tconst, movieList[i].primaryTitle,
-      movieList[i].originalTitle);
-    printf("  -%d\n", movieList[i].isAdult);
-    printf("  -%d\n", movieList[i].startYear);
-    printf("  -%d\n", movieList[i].runtime);
-    printf("  -%s\n", movieList[i].genres);
-    i++;
-  }
-
-  return;
-}

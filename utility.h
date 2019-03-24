@@ -1,4 +1,4 @@
-typedef struct {
+typedef struct _movie {
   int     tconst;
   char    primaryTitle[300];
   char    originalTitle[300];
@@ -7,8 +7,8 @@ typedef struct {
   int     runtime;
   char    genres[10];      //abbreviating genres as chars
   int     height;
-  Movie   *left;
-  Movie   *Right;
+  struct _movie   *left;
+  struct _movie   *right;
 } Movie;
 
 typedef struct {
@@ -27,15 +27,13 @@ int height(Movie *N);
 
 int max(int a, int b);
 
-Movie *newNode(int key);
-
 Movie *rightRotate(Movie *y);
 
 Movie *leftRotate(Movie *x);
 
 int getBalance(Movie *N);
 
-Movie *insert(Movie* node, int key);
+Movie *insert(Movie* node, Movie *newMovie);
 
 void preOrder(Movie *root);
 
