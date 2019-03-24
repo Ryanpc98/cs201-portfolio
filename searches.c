@@ -7,6 +7,7 @@
 /*                                                                            */
 /******************************************************************************/
 
+/* Utility function used to print the results of a search */
 void searchPrint(int *tconstArray, Movie *movieList) {
     int i = 0;
     int j = 0;
@@ -29,6 +30,7 @@ void searchPrint(int *tconstArray, Movie *movieList) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Modified version of searchPrint used to print 10 movies */
 void printNextTen(int *tconstArray, Movie *movieList, int start) {
     int i = start * 10;
     int j = 0;
@@ -52,6 +54,8 @@ void printNextTen(int *tconstArray, Movie *movieList, int start) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Searches the tree for the specified movie title */
+  /* and returns a pointer to that movie */
  int *titleSearch(Movie *movieList, char *searchTitle) { /* complete rework */
   char tempSearchTitle[strlen(searchTitle)];
 
@@ -105,6 +109,7 @@ void printNextTen(int *tconstArray, Movie *movieList, int start) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Filters the results of a search by genre */
 int *genreFilter(Movie *movieList, int *tconstArray, char genre) {
   static int filteredArray[1000000];
 
@@ -145,6 +150,7 @@ int *genreFilter(Movie *movieList, int *tconstArray, char genre) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Filters the results of a search by year */
 int *yearFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
   static int filteredArray[1000000];
 
@@ -182,6 +188,7 @@ int *yearFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Filters the results of a search by runtime */
 int *rtFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
   static int filteredArray[1000000];
 
@@ -219,6 +226,7 @@ int *rtFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Prints all movies of a certain genre */
 void printGenre(Movie *movieList, char genre) {
 
   int i = 0;
@@ -247,6 +255,7 @@ void printGenre(Movie *movieList, char genre) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Prints all movies released in a certain year */
 void printYear(Movie *movieList, int lower, int higher) {
 
   int i = 0;
@@ -269,6 +278,7 @@ void printYear(Movie *movieList, int lower, int higher) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Prints all movies of a certain runtime */
 void printRt(Movie *movieList, int lower, int higher) {
 
   int i = 0;
@@ -291,6 +301,7 @@ void printRt(Movie *movieList, int lower, int higher) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Not sure if I still need this, should probably delete it */
 Movie *findMovie(Movie *movieList, int tconst) {
   int i = 0;
 
@@ -303,3 +314,7 @@ Movie *findMovie(Movie *movieList, int tconst) {
 
   return NULL;
 }
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/

@@ -9,6 +9,9 @@
 /*                                                                            */
 /******************************************************************************/
 
+/* Determines if user already exists or not */
+/* If they do exist is opens their .log file */
+/* If not, it creates a new one */
 char *userLogin() {
   char *userFilename = malloc(100 * sizeof(char));
   for (int i = 0; i < 100; i++) {
@@ -98,6 +101,7 @@ char *userLogin() {
 /*                                                                            */
 /******************************************************************************/
 
+/* Reads in all relevant information about each movie into memory */
 Movie *readFromFile() {
 
   FILE *fp;
@@ -145,7 +149,7 @@ Movie *readFromFile() {
         varPos++;
       }
       newMovie->primaryTitle[varPos] = '\0';
-      
+
       /* Find originalTitle */
       linePos++;
       varPos = 0;

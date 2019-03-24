@@ -8,6 +8,7 @@
 /*                                                                            */
 /******************************************************************************/
 
+/* Allows the user to select a title from search to add to their list */
 UserMovie *selectTitleToAdd(Movie *movieList, int *tconstArray, UserMovie *userArray) {
   int userNum;
   char ownType;
@@ -48,6 +49,7 @@ UserMovie *selectTitleToAdd(Movie *movieList, int *tconstArray, UserMovie *userA
 /*                                                                            */
 /******************************************************************************/
 
+/* Allows the user to select a title from their list to remove */
 UserMovie *selectTitleToRemove(Movie *movieList, UserMovie *userArray) {
   int userNum;
 
@@ -68,6 +70,7 @@ UserMovie *selectTitleToRemove(Movie *movieList, UserMovie *userArray) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Prints out a users list of movies */
 void userArrayPrint(UserMovie *tconstArray, Movie *movieList) {
     int i = 0;
     int j = 0;
@@ -92,3 +95,7 @@ void userArrayPrint(UserMovie *tconstArray, Movie *movieList) {
 
   return;
 }
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
