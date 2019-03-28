@@ -17,84 +17,58 @@ char *userLogin() {
   for (int i = 0; i < 100; i++) {
     userFilename[i] = '\0';
   }
-  char *userName = malloc(93 * sizeof(char));
-  for (int i = 0; i < 94; i++) {
-    userName[i] = '\0';
-  }
-  char *buffer = malloc(100 * sizeof(char));
-  for (int i = 0; i < 94; i++) {
-    buffer[i] = '\0';
-  }
-  char existUser;
-  int choice;
 
-  printf("Are you an existing user(y/n)? \n");
-  scanf("%c", &existUser);
-  while (existUser != 'y' && existUser != 'n') {
-    printf("Error, please try again: \n");
-    printf("(y for yes or n for no)\n");
-    scanf("%c", &existUser);
-  }
+  char choice;
 
   printf("Please enter your username: \n");
-  scanf("%s", userName);
-  userFilename = strcat(userName, ".log");
+  scanf("%s", userFilename);
+  userFilename = strcat(userFilename, ".log");
   printf(".log added\n");
+  printf("filename: %s\n", userFilename);
 
   /* Open File */
   FILE *fp;
-  fp = fopen("userList.txt", "r");
+  fp = fopen(userFilename, "r");
 
   if (fp == NULL) {
-   printf("%s\n", "Error in opening file");
-   return NULL;
-  }
+   printf("No matching file found\n\n");
+   printf("Create a new one? (y/n): ");
+   scanf("%c", &choice);
 
-  /* Check if User Exists */
-  while (!feof(fp)) {
-    fscanf(fp, "%s", buffer);
-    printf("buffer: %s\n", buffer);
-    if (!strcmp(buffer, userFilename)) {
-      printf("match found\n");
-      if (existUser == 'y') { //if filename already exists and user is existing
-        free(userName);
-        free(buffer);
-        return userFilename;
-      }
-      else { //if filename already exists and user is not existing
-        printf("Username already taken, please enter a different one: \n");
-        scanf("%s\n", userName);
-        userFilename = strcat(userName, ".log");
-        rewind(fp);
-      }
-    }
-    else { //if filename does not exist and user is existing
-      if (existUser == 'y') {
-        printf("Username not found, would you like to: \n");
-        printf("  1: Enter a new name\n");
-        printf("  2: Create a new user\n");
-        scanf("%d", &choice);
-        if (choice == 1) {
-          printf("Please enter your username: \n");
-          scanf("%s\n", userName);
-          userFilename = strcat(userName, ".log");
-        }
-        else {
-          free(userName);
-          free(buffer);
-          return userFilename;
-        }
-      }
-      else { //if filename does not exist and user is not existing
-        free(userName);
-        free(buffer);
-        return userFilename;
-      }
-    }
-  }
-  free(userName);
-  free(buffer);
-  return userFilename;
+   while (choice != 'y' && choice != 'n') {
+     printf("Please enter y for yes or n for no: ");
+     scanf("%c", &choice);
+   }
+
+   if (choice == 'y') {
+     return userFilename;
+   }
+   else if (choice == 'n') {
+     fclose(fp);
+     return userLogin();
+   }
+ }
+
+ else {
+   printf("User found\n");
+   printf("Are you looking for an existing list? (y/n): ");
+   scanf("%c", &choice);
+
+   while (choice != 'y' && choice != 'n') {
+     printf("Please enter y for yes or n for no: ");
+     scanf("%c", &choice);
+   }
+
+   if (choice == 'y') {
+     return userFilename;
+   }
+   else if (choice == 'n') {
+     printf("Please try a different username\n");
+     return userLogin();
+   }
+ }
+
+ return NULL;
 }
 
 /******************************************************************************/
@@ -106,19 +80,22 @@ Movie *readFromFile() {
 
   FILE *fp;
   fp = fopen("title.basics.tsv", "r");
-  //fp = fopen("first.5k.txt", "r");
 
   if (fp == NULL) {
-   printf("%s\n", "Error in opening file");
+   printf("%s\n", "Error in opening imdb file");
    return(NULL);
   }
 
+  char tempPrimaryTitle[201];
+  char tempOriginalTitle[201];
   char tempTconst[8];
   char tempYear[5];
   char tempRuntime[4];
+  char tempGenres[29];  //29 is the number of genres, and thus max possible number
   char currLine[500];
   int numMovies;
-  Movie *root;
+  Movie *root = NULL;
+  int len;
 
   printf("Loading Movie Data...\n");
   while (!feof(fp)) {
@@ -143,22 +120,46 @@ Movie *readFromFile() {
       /*  Find primaryTitle */
       linePos = 16;
       varPos = 0;
-      while (currLine[linePos] != '	') {
-        newMovie->primaryTitle[varPos] = currLine[linePos];
+      while (currLine[linePos] != '	' && varPos < 200) {
+        tempPrimaryTitle[varPos] = currLine[linePos];
         linePos++;
         varPos++;
       }
-      newMovie->primaryTitle[varPos] = '\0';
+      if (varPos == 200) {
+        for (int i = 196; i < 199; i++) {
+          tempPrimaryTitle[196] = '.';
+        }
+        while (currLine[linePos] != '	') {
+          linePos++;
+        }
+      }
+      tempPrimaryTitle[varPos] = '\0';
+      newMovie->primaryTitle = malloc(varPos * sizeof(char));
+      strcpy(newMovie->primaryTitle, tempPrimaryTitle);
+
+      /* Set lowerTitle */
+      newMovie->lowerTitle = malloc(varPos * sizeof(char));
+      newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->primaryTitle);
 
       /* Find originalTitle */
       linePos++;
       varPos = 0;
-      while (currLine[linePos] != '	') {
-        newMovie->originalTitle[varPos] = currLine[linePos];
+      while (currLine[linePos] != '	' && varPos < 200) {
+        tempOriginalTitle[varPos] = currLine[linePos];
         linePos++;
         varPos++;
       }
-      newMovie->originalTitle[varPos] = '\0';
+      if (varPos == 200) {
+        for (int i = 196; i < 199; i++) {
+          tempOriginalTitle[196] = '.';
+        }
+        while (currLine[linePos] != '	') {
+          linePos++;
+        }
+      }
+      tempOriginalTitle[varPos] = '\0';
+      newMovie->originalTitle = malloc(varPos * sizeof(char));
+      strcpy(newMovie->originalTitle, tempOriginalTitle);
 
       /* Find isAdult */
       linePos++;
@@ -202,26 +203,26 @@ Movie *readFromFile() {
         linePos++;
         /* \N */
         if (currLine[linePos] == '\\') {
-          newMovie->genres[varPos] = '0';
+          tempGenres[varPos] = '0';
           linePos += 2;
         }
         /* A */
         else if (currLine[linePos] == 'A') {
           linePos++;
           if (currLine[linePos] == 'c') { //Action
-            newMovie->genres[varPos] = 'a';
+            tempGenres[varPos] = 'a';
             varPos++;
             linePos += 5;
           }
           else if (currLine[linePos] == 'd') {
             linePos++;
             if (currLine[linePos] == 'v') { //Adventure
-              newMovie->genres[varPos] = 'b';
+              tempGenres[varPos] = 'b';
               varPos++;
               linePos += 7;
             }
             else if (currLine[linePos] == 'u') { //Adult
-              newMovie->genres[varPos] = 'c';
+              tempGenres[varPos] = 'c';
               varPos++;
               linePos += 3;
             }
@@ -231,7 +232,7 @@ Movie *readFromFile() {
             }
           }
           else if (currLine[linePos] == 'n') { //Animation
-            newMovie->genres[varPos] = 'd';
+            tempGenres[varPos] = 'd';
             varPos++;
             linePos += 8;
           }
@@ -242,7 +243,7 @@ Movie *readFromFile() {
         }
         /* B */
         else if (currLine[linePos] == 'B') { //Biography
-          newMovie->genres[varPos] = 'e';
+          tempGenres[varPos] = 'e';
           varPos++;
           linePos += 9;
         }
@@ -250,12 +251,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'C') {
           linePos++;
           if (currLine[linePos] == 'o') { //Comedy
-            newMovie->genres[varPos] = 'f';
+            tempGenres[varPos] = 'f';
             varPos++;
             linePos += 5;
           }
           else if (currLine[linePos] == 'r') { //Crime
-            newMovie->genres[varPos] = 'g';
+            tempGenres[varPos] = 'g';
             varPos++;
             linePos += 4;
           }
@@ -268,12 +269,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'D') {
           linePos++;
           if (currLine[linePos] == 'o') { //Documentary
-            newMovie->genres[varPos] = 'h';
+            tempGenres[varPos] = 'h';
             varPos++;
             linePos += 10;
           }
           else if (currLine[linePos] == 'r') { //Drama
-            newMovie->genres[varPos] = 'i';
+            tempGenres[varPos] = 'i';
             varPos++;
             linePos += 4;
           }
@@ -288,12 +289,12 @@ Movie *readFromFile() {
           if (currLine[linePos] == 'a') {
             linePos++;
             if (currLine[linePos] == 'm') { //Family
-              newMovie->genres[varPos] = 'j';
+              tempGenres[varPos] = 'j';
               varPos++;
               linePos += 4;
             }
             else if (currLine[linePos] == 'n') { //Fantasy
-              newMovie->genres[varPos] = 'k';
+              tempGenres[varPos] = 'k';
               varPos++;
               linePos += 5;
             }
@@ -303,7 +304,7 @@ Movie *readFromFile() {
             }
           }
           else if (currLine[linePos] == 'i') { //Film-Noir
-            newMovie->genres[varPos] = 'l';
+            tempGenres[varPos] = 'l';
             varPos++;
             linePos += 8;
           }
@@ -314,7 +315,7 @@ Movie *readFromFile() {
         }
         /* G */
         else if (currLine[linePos] == 'G') { //Game-Show
-          newMovie->genres[varPos] = 'm';
+          tempGenres[varPos] = 'm';
           varPos++;
           linePos += 9;
         }
@@ -322,12 +323,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'H') {
           linePos++;
           if (currLine[linePos] == 'i') { //History
-            newMovie->genres[varPos] = 'n';
+            tempGenres[varPos] = 'n';
             varPos++;
             linePos += 6;
           }
           else if (currLine[linePos] == 'o') { //Horror
-            newMovie->genres[varPos] = 'o';
+            tempGenres[varPos] = 'o';
             varPos++;
             linePos += 5;
           }
@@ -342,12 +343,12 @@ Movie *readFromFile() {
           if (currLine[linePos] == 'u') {
             linePos += 4;
             if (!isalpha(currLine[linePos])) { //Music
-              newMovie->genres[varPos] = 'p';
+              tempGenres[varPos] = 'p';
               varPos++;
               linePos += 0;
             }
             else if (currLine[linePos] == 'a') { //Musical
-              newMovie->genres[varPos] = 'q';
+              tempGenres[varPos] = 'q';
               varPos++;
               linePos += 2;
             }
@@ -357,7 +358,7 @@ Movie *readFromFile() {
             }
           }
           else if (currLine[linePos] == 'y') { //Mystery
-            newMovie->genres[varPos] = 'r';
+            tempGenres[varPos] = 'r';
             varPos++;
             linePos += 6;
           }
@@ -368,7 +369,7 @@ Movie *readFromFile() {
         }
         /* N */
         else if (currLine[linePos] == 'N') { //News
-          newMovie->genres[varPos] = 's';
+          tempGenres[varPos] = 's';
           varPos++;
           linePos += 4;
         }
@@ -376,12 +377,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'R') {
           linePos++;
           if (currLine[linePos] == 'o') { //Romance
-            newMovie->genres[varPos] = 't';
+            tempGenres[varPos] = 't';
             varPos++;
             linePos += 6;
           }
           else if (currLine[linePos] == 'e') { //Reality-TV
-            newMovie->genres[varPos] = 'u';
+            tempGenres[varPos] = 'u';
             varPos++;
             linePos += 9;
           }
@@ -390,22 +391,22 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'S') {
           linePos++;
           if (currLine[linePos] == 'c') { //Sci Fi
-            newMovie->genres[varPos] = 'v';
+            tempGenres[varPos] = 'v';
             varPos++;
             linePos += 5;
           }
           else if (currLine[linePos] == 'h') { //Short
-            newMovie->genres[varPos] = 'w';
+            tempGenres[varPos] = 'w';
             varPos++;
             linePos += 4;
           }
           else if (currLine[linePos] == 'p') { //Sport
-            newMovie->genres[varPos] = 'x';
+            tempGenres[varPos] = 'x';
             varPos++;
             linePos += 4;
           }
           else if (currLine[linePos] == 'u') { //Superhero
-            newMovie->genres[varPos] = 'y';
+            tempGenres[varPos] = 'y';
             varPos++;
             linePos += 8;
           }
@@ -418,12 +419,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'T') {
           linePos++;
           if (currLine[linePos] == 'a') { //Talk-Show
-            newMovie->genres[varPos] = 'z';
+            tempGenres[varPos] = 'z';
             varPos++;
             linePos += 8;
           }
           else if (currLine[linePos] == 'h') { //Thriller
-            newMovie->genres[varPos] = 'A';
+            tempGenres[varPos] = 'A';
             varPos++;
             linePos += 7;
           }
@@ -432,12 +433,12 @@ Movie *readFromFile() {
         else if (currLine[linePos] == 'W') {
           linePos++;
           if (currLine[linePos] == 'a') { //War
-            newMovie->genres[varPos] = 'B';
+            tempGenres[varPos] = 'B';
             varPos++;
             linePos += 2;
           }
           else if (currLine[linePos] == 'e') { //Western
-            newMovie->genres[varPos] = 'C';
+            tempGenres[varPos] = 'C';
             varPos++;
             linePos += 6;
           }
@@ -451,19 +452,15 @@ Movie *readFromFile() {
           break;
         }
       }
-      newMovie->genres[varPos] = '\0';
-
-      //printf("%s\n", newMovie->primaryTitle);
-      //preOrder(root);
+      tempGenres[varPos] = '\0';
+      newMovie->genres = malloc(varPos * sizeof(char));
+      strcpy(newMovie->genres, tempGenres);
 
       newMovie->left = NULL;
       newMovie->right = NULL;
       newMovie->height = 1;
 
       root = insert(root, newMovie);
-      //printf("root: %s\n", root->primaryTitle);
-      //preOrder(root);
-      //printf("\n\n");
       numMovies++;
     }
   }
@@ -472,6 +469,21 @@ Movie *readFromFile() {
   fclose(fp);
 
   return root;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+char *strLower(char *dest, char *src) {
+  int len = strlen(src);
+
+  for (int i = 0; i < len; i++) {
+    dest[i] = tolower(src[i]);
+  }
+  dest[len] = '\0';
+
+  return dest;
 }
 
 /******************************************************************************/

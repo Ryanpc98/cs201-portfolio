@@ -99,3 +99,12 @@ void userArrayPrint(UserMovie *tconstArray, Movie *movieList) {
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
+
+void saveFile(FILE *fp, UserMovie *root) {
+  if(root != NULL) {
+    fprintf(fp, "%d//%s//%c//%s", root->tconst, root->title,
+                              root->ownershipType, root->dateAquired);
+    saveFile(fp, root->left);
+    saveFile(fp, root->right);
+  }
+}

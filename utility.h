@@ -3,12 +3,13 @@
   //Contains all available information
 typedef struct _movie {
   int     tconst;
-  char    primaryTitle[300];
-  char    originalTitle[300];
+  char    *primaryTitle;
+  char    *originalTitle;
+  char    *lowerTitle;
   int     isAdult;
   int     startYear;
   int     runtime;
-  char    genres[10];      //abbreviating genres as chars
+  char    *genres;      //abbreviating genres as chars
   int     height;
   struct _movie   *left;
   struct _movie   *right;
@@ -17,10 +18,13 @@ typedef struct _movie {
 // Data type for storing movies a user selects
   // Contains information needed to locate identify movie
   // And information that is unique for every user
-typedef struct {
+typedef struct _usermovie{
+  int tconst;
   char    title[300];
   char    ownershipType;   //phyiscal, digital
-  //char    dateAquired;
+  char    dateAquired[11]; //(01-34-6789)
+  struct _usermovie *left;
+  struct _usermovie *right;
 } UserMovie;
 
 
@@ -30,6 +34,8 @@ typedef struct {
 char *userLogin();
 
 Movie *readFromFile();
+
+char *strLower(char *dest, char *src);
 
 /* avl.c */
 /* Contains all the borrowed code */
@@ -52,11 +58,13 @@ void preOrder(Movie *root);
 /* searches.c */
 /* Contains all functions relevant to the searching and filtering of data */
 
+Movie *movieCopy(Movie *dest, Movie *src);
+
 void searchPrint(int *tconstArray, Movie *movieList);
 
 void printNextTen(int *tconstArray, Movie *movieList, int start);
 
-int *titleSearch(Movie *movieList, char *searchTitle);
+Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle);
 
 int *genreFilter(Movie *movieList, int *tconstArray, char genre);
 
@@ -78,3 +86,5 @@ UserMovie *selectTitleToAdd(Movie *movieList, int *tconstArray, UserMovie *userA
 UserMovie *selectTitleToRemove(Movie *movieList, UserMovie *userArray);
 
 void userArrayPrint(UserMovie *tconstArray, Movie *movieList);
+
+void saveFile(FILE *fp, UserMovie *root);

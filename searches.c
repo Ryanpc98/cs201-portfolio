@@ -1,7 +1,28 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "utility.h"
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+Movie *movieCopy(Movie *dest, Movie *src) {
+  dest->tconst = src->tconst;
+  dest->primaryTitle = src->primaryTitle;
+  dest->originalTitle = src->originalTitle;
+  dest->lowerTitle = src->lowerTitle;
+  dest->isAdult = src->isAdult;
+  dest->startYear = src->startYear;
+  dest->runtime = src->runtime;
+  dest->genres = src->genres;
+  dest->height = 1;
+  dest->left = NULL;
+  dest->right = NULL;
+
+  return dest;
+}
 
 /******************************************************************************/
 /*                                                                            */
@@ -56,53 +77,32 @@ void printNextTen(int *tconstArray, Movie *movieList, int start) {
 
 /* Searches the tree for the specified movie title */
   /* and returns a pointer to that movie */
- int *titleSearch(Movie *movieList, char *searchTitle) { /* complete rework */
-  char tempSearchTitle[strlen(searchTitle)];
 
-  for (int i = 0; i < strlen(searchTitle); i++) {
-    tempSearchTitle[i] = tolower(searchTitle[i]);
-  }
-  tempSearchTitle[strlen(searchTitle)] = '\0';
-
-  static int tconstArray[1000000];
-
-  for (int i = 0; i < 1000000; i++) {
-    tconstArray[i] = -2;
+Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle) {
+  if (masterTreeNode == NULL) {
+    return searchMatches;
   }
 
-  int arrayPos = 0;
-  char tempPrimaryTitle[300];
-  char tempOriginalTitle[300];
+  int searchTitleLen = strlen(searchTitle);
+  int nodeTitleLen = strlen(masterTreeNode->lowerTitle);
 
-  int i = 0;
-  while(movieList[i].tconst != -1) {
-
-    /* Turning titles to lowercase */
-
-    for (int j = 0; j < strlen(movieList[i].primaryTitle); j++) {
-      tempPrimaryTitle[j] = tolower(movieList[i].primaryTitle[j]);
-    }
-    tempPrimaryTitle[strlen(movieList[i].primaryTitle)] = '\0';
-
-    for (int k = 0; k < strlen(movieList[i].originalTitle); k++) {
-      tempOriginalTitle[k] = tolower(movieList[i].originalTitle[k]);
-    }
-    tempOriginalTitle[strlen(movieList[i].originalTitle)] = '\0';
-
-    /* Searching */
-
-    if (strstr(tempPrimaryTitle, tempSearchTitle) != NULL) {
-      tconstArray[arrayPos] = movieList[i].tconst;
-      arrayPos++;
-    }
-    else if (strstr(tempOriginalTitle, tempSearchTitle) != NULL) {
-      tconstArray[arrayPos] = movieList[i].tconst;
-      arrayPos++;
-    }
-    i++;
+  if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
+    return titleSearch(masterTreeNode->left, searchMatches, searchTitle);
   }
-  printf("numMatches: %d\n", arrayPos);
-  return tconstArray;
+  else if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) > 0) {
+    return titleSearch(masterTreeNode->right, searchMatches, searchTitle);
+  }
+  else {
+    Movie *newMatch = malloc(sizeof(Movie));
+    newMatch = movieCopy(newMatch, masterTreeNode);
+    searchMatches = insert(searchMatches, newMatch);
+
+    searchMatches = titleSearch(masterTreeNode->left, searchMatches, searchTitle);
+    searchMatches = titleSearch(masterTreeNode->right, searchMatches, searchTitle);
+
+    return searchMatches;
+  }
+  return NULL;
 }
 
 /******************************************************************************/
