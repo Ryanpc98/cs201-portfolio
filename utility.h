@@ -10,6 +10,7 @@ typedef struct _movie {
   int     startYear;
   int     runtime;
   char    *genres;      //abbreviating genres as chars
+
   int     height;
   struct _movie   *left;
   struct _movie   *right;

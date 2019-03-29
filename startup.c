@@ -76,6 +76,9 @@ char *userLogin() {
 /******************************************************************************/
 
 /* Reads in all relevant information about each movie into memory */
+
+#pragma GCC diagnostic error "-Wframe-larger-than="
+
 Movie *readFromFile() {
 
   FILE *fp;
@@ -93,9 +96,8 @@ Movie *readFromFile() {
   char tempRuntime[4];
   char tempGenres[29];  //29 is the number of genres, and thus max possible number
   char currLine[500];
-  int numMovies;
+  int numMovies = 0;
   Movie *root = NULL;
-  int len;
 
   printf("Loading Movie Data...\n");
   while (!feof(fp)) {
@@ -115,6 +117,7 @@ Movie *readFromFile() {
       for (int i = 2; i < 9; i++) {
         tempTconst[i - 2] = currLine[i];
       }
+      tempTconst[7] = '\0';
       newMovie->tconst = atoi(tempTconst);
 
       /*  Find primaryTitle */
@@ -134,12 +137,8 @@ Movie *readFromFile() {
         }
       }
       tempPrimaryTitle[varPos] = '\0';
-      newMovie->primaryTitle = malloc(varPos * sizeof(char));
+      newMovie->primaryTitle = malloc((varPos + 1) * sizeof(char));
       strcpy(newMovie->primaryTitle, tempPrimaryTitle);
-
-      /* Set lowerTitle */
-      newMovie->lowerTitle = malloc(varPos * sizeof(char));
-      newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->primaryTitle);
 
       /* Find originalTitle */
       linePos++;
@@ -158,8 +157,13 @@ Movie *readFromFile() {
         }
       }
       tempOriginalTitle[varPos] = '\0';
-      newMovie->originalTitle = malloc(varPos * sizeof(char));
+      newMovie->originalTitle = malloc((varPos + 1) * sizeof(char));
       strcpy(newMovie->originalTitle, tempOriginalTitle);
+
+      /* Set lowerTitle */
+      newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
+      newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->primaryTitle);
+      strcat(newMovie->lowerTitle, tempTconst);
 
       /* Find isAdult */
       linePos++;
@@ -464,8 +468,7 @@ Movie *readFromFile() {
       numMovies++;
     }
   }
-  printf("\nMovie Data Successfully Loaded\n");
-  printf("\nnum movies: %d\n", numMovies);
+  printf("\nSuccessfully Loaded %d Movies\n\n", numMovies);
   fclose(fp);
 
   return root;

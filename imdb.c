@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "utility.h"
 
@@ -22,14 +23,17 @@ int main(void) {
 
   Movie *searchRoot = malloc(sizeof(Movie));
   searchRoot = NULL;
-  searchRoot = titleSearch(masterRoot, searchRoot, "star wars");
+  //searchRoot = titleSearch(masterRoot, searchRoot, "stardust");
+  //preOrder(searchRoot);
+  //searchRoot = NULL;
+  searchRoot = titleSearch(masterRoot, searchRoot, "dragon's realm");
   preOrder(searchRoot);
+
 
   //FILE *fp;
   //fp = fopen(userFilename, "w");
   //saveFile(fp, userRoot);
   //fclose(fp);
-
 
   time_t diff = time(NULL) - before;
   printf("\n\nTime taken: %ld s\n", diff); /* end time */

@@ -77,14 +77,12 @@ void printNextTen(int *tconstArray, Movie *movieList, int start) {
 
 /* Searches the tree for the specified movie title */
   /* and returns a pointer to that movie */
-
 Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle) {
   if (masterTreeNode == NULL) {
     return searchMatches;
   }
 
   int searchTitleLen = strlen(searchTitle);
-  int nodeTitleLen = strlen(masterTreeNode->lowerTitle);
 
   if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
     return titleSearch(masterTreeNode->left, searchMatches, searchTitle);
@@ -110,210 +108,56 @@ Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitl
 /******************************************************************************/
 
 /* Filters the results of a search by genre */
-int *genreFilter(Movie *movieList, int *tconstArray, char genre) {
-  static int filteredArray[1000000];
-
-  for (int i = 0; i < 1000000; i++) {
-    filteredArray[i] = -2;
-  }
-
-  int a = 0;
-  int b = 0;
-  int c = 0;
-  int d = 0;
-
-  while (tconstArray[a] != -2) {
-    while (movieList[b].tconst != -1) {
-      if (tconstArray[a] == movieList[b].tconst) {
-        c = 0;
-        while (movieList[b].genres[c] != '0') {
-          if (movieList[b].genres[c] == genre) {
-            filteredArray[d] = tconstArray[a];
-            d++;
-            break;
-          }
-          c++;
-        }
-        break;
-      }
-      b++;
-    }
-    a++;
-  }
-
-  printf("numGenreMatches: %d\n", d);
-
-  return filteredArray;
-}
+//int *genreFilter(Movie *movieList, int *tconstArray, char genre) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Filters the results of a search by year */
-int *yearFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
-  static int filteredArray[1000000];
-
-  for (int i = 0; i < 1000000; i++) {
-    filteredArray[i] = -2;
-  }
-
-  int a = 0;
-  int b = 0;
-  int c = 0;
-
-  while (tconstArray[a] != -2) {
-    //printf("%d, %d, %d\n", a, b, c);
-    b = 0;
-    while (movieList[b].tconst != -1) {
-      if (tconstArray[a] == movieList[b].tconst) {
-        printf("%d: %s\n", movieList[b].startYear, movieList[b].primaryTitle);
-        if (movieList[b].startYear >= lower && movieList[b].startYear <= higher) {
-          filteredArray[c] = movieList[b].tconst;
-          c++;
-          break;
-        }
-      }
-      b++;
-    }
-    a++;
-  }
-
-  printf("numYearMatches: %d\n", c);
-
-  return filteredArray;
-}
+//int *yearFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Filters the results of a search by runtime */
-int *rtFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
-  static int filteredArray[1000000];
-
-  for (int i = 0; i < 1000000; i++) {
-    filteredArray[i] = -2;
-  }
-
-  int a = 0;
-  int b = 0;
-  int c = 0;
-
-  while (tconstArray[a] != -2) {
-    //printf("%d, %d, %d\n", a, b, c);
-    b = 0;
-    while (movieList[b].tconst != -1) {
-      if (tconstArray[a] == movieList[b].tconst) {
-        printf("%d: %s\n", movieList[b].runtime, movieList[b].primaryTitle);
-        if (movieList[b].runtime >= lower && movieList[b].runtime <= higher) {
-          filteredArray[c] = movieList[b].tconst;
-          c++;
-          break;
-        }
-      }
-      b++;
-    }
-    a++;
-  }
-
-  printf("numRtMatches: %d\n", c);
-
-  return filteredArray;
-}
+//int *rtFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Prints all movies of a certain genre */
-void printGenre(Movie *movieList, char genre) {
-
-  int i = 0;
-  int j = 0;
-  int numPrints = 0;
-
-  while (movieList[i].tconst != -1) {
-    j = 0;
-    while (movieList[i].genres[j] != '0') {
-      if (movieList[i].genres[j] == genre) {
-        printf("%s\n", movieList[i].primaryTitle);
-        numPrints++;
-        break;
-      }
-      j++;
-    }
-    i++;
-  }
-
-  printf("numGenrePrints: %d\n", numPrints);
-
-  return;
-}
+//void printGenre(Movie *movieList, char genre) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Prints all movies released in a certain year */
-void printYear(Movie *movieList, int lower, int higher) {
-
-  int i = 0;
-  int numPrints = 0;
-
-  while (movieList[i].tconst != -1) {
-    if (movieList[i].startYear >= lower && movieList[i].startYear <= higher) {
-      printf("%s\n", movieList[i].primaryTitle);
-      numPrints++;
-    }
-    i++;
-  }
-
-  printf("numYearPrints: %d\n", numPrints);
-
-  return;
-}
+//void printYear(Movie *movieList, int lower, int higher) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Prints all movies of a certain runtime */
-void printRt(Movie *movieList, int lower, int higher) {
-
-  int i = 0;
-  int numPrints = 0;
-
-  while (movieList[i].tconst != -1) {
-    if (movieList[i].runtime >= lower && movieList[i].runtime <= higher) {
-      printf("%s\n", movieList[i].primaryTitle);
-      numPrints++;
-    }
-    i++;
-  }
-
-  printf("numRtPrints: %d\n", numPrints);
-
-  return;
-}
+//void printRt(Movie *movieList, int lower, int higher) {
+//}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Not sure if I still need this, should probably delete it */
-Movie *findMovie(Movie *movieList, int tconst) {
-  int i = 0;
-
-  while (movieList[i].tconst != -1) {
-    if (movieList[i].tconst == tconst) {
-      return &movieList[i];
-    }
-    i++;
-  }
-
-  return NULL;
-}
+//Movie *findMovie(Movie *movieList, int tconst) {
+//}
 
 /******************************************************************************/
 /*                                                                            */

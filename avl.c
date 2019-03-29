@@ -89,19 +89,19 @@ int getBalance(Movie *N) {
 // Recursive function to insert a key in the subtree rooted
 // with node and returns the new root of the subtree.
 Movie* insert(Movie* currMovie, Movie *newMovie) {
-  int titlen = strlen(newMovie->lowerTitle);
   /* 1.  Perform the normal BST insertion */
   if (currMovie == NULL)
       return newMovie;
 
-  if (strncmp(newMovie->lowerTitle, currMovie->lowerTitle, titlen) < 0) {
+  if (strcmp(newMovie->lowerTitle, currMovie->lowerTitle) < 0) {
     currMovie->left  = insert(currMovie->left, newMovie);
   }
-  else if (strncmp(newMovie->lowerTitle, currMovie->lowerTitle, titlen) > 0) {
+  else if (strcmp(newMovie->lowerTitle, currMovie->lowerTitle) > 0) {
     currMovie->right = insert(currMovie->right, newMovie);
   }
-  else // Equal keys are not allowed in BST
+  else {
     return currMovie;
+  }
 
   /* 2. Update height of this ancestor currMovie */
   currMovie->height = 1 + max(height(currMovie->left), height(currMovie->right));
@@ -115,23 +115,23 @@ Movie* insert(Movie* currMovie, Movie *newMovie) {
   // there are 4 cases
 
   // Left Left Case
-  if (balance > 1 && strncmp(newMovie->lowerTitle, currMovie->left->lowerTitle, titlen) < 0) {
+  if (balance > 1 && strcmp(newMovie->lowerTitle, currMovie->left->lowerTitle) < 0) {
     return rightRotate(currMovie);
   }
 
   // Right Right Case
-  if (balance < -1 && strncmp(newMovie->lowerTitle, currMovie->right->lowerTitle, titlen) > 0) {
+  if (balance < -1 && strcmp(newMovie->lowerTitle, currMovie->right->lowerTitle) > 0) {
     return leftRotate(currMovie);
   }
 
   // Left Right Case
-  if (balance > 1 && strncmp(newMovie->lowerTitle, currMovie->left->lowerTitle, titlen) > 0) {
+  if (balance > 1 && strcmp(newMovie->lowerTitle, currMovie->left->lowerTitle) > 0) {
     currMovie->left =  leftRotate(currMovie->left);
     return rightRotate(currMovie);
   }
 
   // Right Left Case
-  if (balance < -1 && strncmp(newMovie->lowerTitle, currMovie->right->lowerTitle, titlen) < 0) {
+  if (balance < -1 && strcmp(newMovie->lowerTitle, currMovie->right->lowerTitle) < 0) {
     currMovie->right = rightRotate(currMovie->right);
     return leftRotate(currMovie);
   }
@@ -148,7 +148,7 @@ Movie* insert(Movie* currMovie, Movie *newMovie) {
 // of the tree.
 void preOrder(Movie *root) {
   if(root != NULL) {
-    printf("|%s|\n", root->primaryTitle);
+    printf("%s(%d)\n", root->primaryTitle, root->startYear);
     preOrder(root->left);
     preOrder(root->right);
   }
