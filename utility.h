@@ -10,7 +10,6 @@ typedef struct _movie {
   int     startYear;
   int     runtime;
   char    *genres;      //abbreviating genres as chars
-
   int     height;
   struct _movie   *left;
   struct _movie   *right;
@@ -31,12 +30,15 @@ typedef struct _usermovie{
 
 /* startup.c */
 /* Contains functions that run automatically when the program is launched */
+/* As well as some other utility functions used throughout */
 
 char *userLogin();
 
 Movie *readFromFile();
 
 char *strLower(char *dest, char *src);
+
+Movie *movieCopy(Movie *dest, Movie *src);
 
 /* avl.c */
 /* Contains all the borrowed code */
@@ -58,8 +60,6 @@ void preOrder(Movie *root);
 
 /* searches.c */
 /* Contains all functions relevant to the searching and filtering of data */
-
-Movie *movieCopy(Movie *dest, Movie *src);
 
 void searchPrint(int *tconstArray, Movie *movieList);
 

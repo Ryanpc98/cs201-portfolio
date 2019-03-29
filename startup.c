@@ -492,3 +492,23 @@ char *strLower(char *dest, char *src) {
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+Movie *movieCopy(Movie *dest, Movie *src) {
+  dest->tconst = src->tconst;
+  dest->primaryTitle = src->primaryTitle;
+  dest->originalTitle = src->originalTitle;
+  dest->lowerTitle = src->lowerTitle;
+  dest->isAdult = src->isAdult;
+  dest->startYear = src->startYear;
+  dest->runtime = src->runtime;
+  dest->genres = src->genres;
+  dest->height = 1;
+  dest->left = NULL;
+  dest->right = NULL;
+
+  return dest;
+}
