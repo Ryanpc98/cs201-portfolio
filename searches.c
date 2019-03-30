@@ -8,56 +8,9 @@
 /*                                                                            */
 /******************************************************************************/
 
-/* Utility function used to print the results of a search */
-void searchPrint(int *tconstArray, Movie *movieList) {
-    int i = 0;
-    int j = 0;
-    while (tconstArray[i] != -2) {
-      while (movieList[j].tconst != -1) {
-        if (tconstArray[i] == movieList[j].tconst) {
-          printf("%d: %s\n", i, movieList[j].primaryTitle);
-          printf("         %s\n", movieList[j].originalTitle);
-          break;
-        }
-        j++;
-      }
-      i++;
-    }
-
-  return;
-}
-
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
-/* Modified version of searchPrint used to print 10 movies */
-void printNextTen(int *tconstArray, Movie *movieList, int start) {
-    int i = start * 10;
-    int j = 0;
-    for (int a = 0; a < 10; a++) {
-      if (tconstArray[i] != -2) {
-        while (movieList[j].tconst != -1) {
-          if (tconstArray[i] == movieList[j].tconst) {
-            printf("%d: %s\n", i, movieList[j].primaryTitle);
-            printf("         %s\n", movieList[j].originalTitle);
-            break;
-          }
-          j++;
-        }
-        i++;
-      }
-    }
-  return;
-}
-
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
 /* Searches the tree for the specified movie title */
   /* and returns a pointer to that movie */
-Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle) {
+Movie *titleSearchAll(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle) {
   if (masterTreeNode == NULL) {
     return searchMatches;
   }
@@ -65,18 +18,18 @@ Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitl
   int searchTitleLen = strlen(searchTitle);
 
   if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
-    return titleSearch(masterTreeNode->left, searchMatches, searchTitle);
+    return titleSearchAll(masterTreeNode->left, searchMatches, searchTitle);
   }
   else if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) > 0) {
-    return titleSearch(masterTreeNode->right, searchMatches, searchTitle);
+    return titleSearchAll(masterTreeNode->right, searchMatches, searchTitle);
   }
   else {
     Movie *newMatch = malloc(sizeof(Movie));
     newMatch = movieCopy(newMatch, masterTreeNode);
     searchMatches = insert(searchMatches, newMatch);
 
-    searchMatches = titleSearch(masterTreeNode->left, searchMatches, searchTitle);
-    searchMatches = titleSearch(masterTreeNode->right, searchMatches, searchTitle);
+    searchMatches = titleSearchAll(masterTreeNode->left, searchMatches, searchTitle);
+    searchMatches = titleSearchAll(masterTreeNode->right, searchMatches, searchTitle);
 
     return searchMatches;
   }
@@ -87,57 +40,82 @@ Movie *titleSearch(Movie *masterTreeNode, Movie *searchMatches, char *searchTitl
 /*                                                                            */
 /******************************************************************************/
 
+Movie *titleSearchExact(Movie *masterTreeNode, Movie *searchMatch, char *searchTitle) {
+  if (masterTreeNode == NULL) {
+    return searchMatch;
+  }
+  printf("%s - %s\n", searchTitle, masterTreeNode->lowerTitle);
+  int searchTitleLen = strlen(searchTitle);
+
+  if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
+    return titleSearchExact(masterTreeNode->left, searchMatch, searchTitle);
+  }
+  else if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) > 0) {
+    return titleSearchExact(masterTreeNode->right, searchMatch, searchTitle);
+  }
+  else {
+    searchMatch = movieCopy(searchMatch, masterTreeNode);
+    return searchMatch;
+  }
+  return NULL;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
 /* Filters the results of a search by genre */
-//int *genreFilter(Movie *movieList, int *tconstArray, char genre) {
-//}
+Movie *genreFilter(Movie *root, Movie *resultTree, char genre) {
+  if(root != NULL) {
+    if (strchr(root->genres, genre) != NULL) {
+      Movie *newMatch = malloc(sizeof(Movie));
+      newMatch = movieCopy(newMatch, root);
+      resultTree = insert(resultTree, newMatch);
+    }
+
+    resultTree = genreFilter(root->left, resultTree, genre);
+    resultTree =  genreFilter(root->right, resultTree, genre);
+  }
+  return resultTree;
+}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Filters the results of a search by year */
-//int *yearFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
-//}
+Movie *yearFilter(Movie *root, Movie *resultTree, int low, int high) {
+  if(root != NULL) {
+    if ((root->startYear >= low) && (root->startYear <= high)) {
+      Movie *newMatch = malloc(sizeof(Movie));
+      newMatch = movieCopy(newMatch, root);
+      resultTree = insert(resultTree, newMatch);
+    }
+
+    resultTree = yearFilter(root->left, resultTree, low, high);
+    resultTree =  yearFilter(root->right, resultTree, low, high);
+  }
+  return resultTree;
+}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
 /* Filters the results of a search by runtime */
-//int *rtFilter(Movie *movieList, int *tconstArray, int lower, int higher) {
-//}
+Movie *rtFilter(Movie *root, Movie *resultTree, int low, int high) {
+  if(root != NULL) {
+    if ((root->runtime >= low) && (root->runtime <= high)) {
+      Movie *newMatch = malloc(sizeof(Movie));
+      newMatch = movieCopy(newMatch, root);
+      resultTree = insert(resultTree, newMatch);
+    }
 
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
-/* Prints all movies of a certain genre */
-//void printGenre(Movie *movieList, char genre) {
-//}
-
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
-/* Prints all movies released in a certain year */
-//void printYear(Movie *movieList, int lower, int higher) {
-//}
-
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
-/* Prints all movies of a certain runtime */
-//void printRt(Movie *movieList, int lower, int higher) {
-//}
-
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
-/* Not sure if I still need this, should probably delete it */
-//Movie *findMovie(Movie *movieList, int tconst) {
-//}
+    resultTree = rtFilter(root->left, resultTree, low, high);
+    resultTree =  rtFilter(root->right, resultTree, low, high);
+  }
+  return resultTree;
+}
 
 /******************************************************************************/
 /*                                                                            */

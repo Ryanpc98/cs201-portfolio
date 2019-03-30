@@ -9,22 +9,48 @@
 /*                                                                            */
 /******************************************************************************/
 
+char *getUserFilename() {
+  char userName[100];
+  for (int i = 0; i < 100; i++) {
+    userName[i] = '\0';
+  }
+  printf("Please enter your username: ");
+  char tempChar = 0;
+  int i = 0;
+  scanf("%c", &tempChar);
+  while (tempChar != '\n') {
+    userName[i] = tempChar;
+    i++;
+    if (i >= 95) {
+      printf("Username too long\n");
+      printf("Username being truncated at ");
+      printf("...");
+      for (int j = 3; j > 0; j--) {
+        printf("%c", userName[i - j]);
+      }
+      printf("\n\n");
+      /* clear out the rest of input */
+      clearIn();
+    }
+    scanf("%c", &tempChar);
+  }
+
+  char *userFilename = malloc((strlen(userName) + 1) * sizeof(char));
+  strcpy(userFilename, userName);
+  strcat(userFilename, ".log");
+  printf("%s\n", userFilename);
+  return userFilename;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
 /* Determines if user already exists or not */
 /* If they do exist is opens their .log file */
 /* If not, it creates a new one */
-char *userLogin() {
-  char *userFilename = malloc(100 * sizeof(char));
-  for (int i = 0; i < 100; i++) {
-    userFilename[i] = '\0';
-  }
-
+void userLogin(char *userFilename) {
   char choice;
-
-  printf("Please enter your username: \n");
-  scanf("%s", userFilename);
-  userFilename = strcat(userFilename, ".log");
-  printf(".log added\n");
-  printf("filename: %s\n", userFilename);
 
   /* Open File */
   FILE *fp;
@@ -34,41 +60,47 @@ char *userLogin() {
    printf("No matching file found\n\n");
    printf("Create a new one? (y/n): ");
    scanf("%c", &choice);
+   clearIn();
 
    while (choice != 'y' && choice != 'n') {
      printf("Please enter y for yes or n for no: ");
      scanf("%c", &choice);
+     clearIn();
    }
 
    if (choice == 'y') {
-     return userFilename;
+     fclose(fp);
+     return;
    }
    else if (choice == 'n') {
      fclose(fp);
-     return userLogin();
+     return userLogin(getUserFilename());
    }
  }
 
  else {
-   printf("User found\n");
-   printf("Are you looking for an existing list? (y/n): ");
+   printf("\nAre you looking for an existing list? (y/n): ");
    scanf("%c", &choice);
+   clearIn();
 
    while (choice != 'y' && choice != 'n') {
-     printf("Please enter y for yes or n for no: ");
+     printf("\nPlease enter y for yes or n for no: ");
      scanf("%c", &choice);
+     clearIn();
    }
 
    if (choice == 'y') {
-     return userFilename;
+     fclose(fp);
+     return;
    }
    else if (choice == 'n') {
-     printf("Please try a different username\n");
-     return userLogin();
+     printf("\nPlease try a different username\n");
+     fclose(fp);
+     return userLogin(getUserFilename());
    }
  }
 
- return NULL;
+ return;
 }
 
 /******************************************************************************/
@@ -76,10 +108,7 @@ char *userLogin() {
 /******************************************************************************/
 
 /* Reads in all relevant information about each movie into memory */
-
-#pragma GCC diagnostic error "-Wframe-larger-than="
-
-Movie *readFromFile() {
+Movie *readImdbFile() {
 
   FILE *fp;
   fp = fopen("title.basics.tsv", "r");
@@ -99,7 +128,7 @@ Movie *readFromFile() {
   int numMovies = 0;
   Movie *root = NULL;
 
-  printf("Loading Movie Data...\n");
+  printf("\n\nLoading IMDB Movie Data...\n");
   while (!feof(fp)) {
     fgets(currLine, 500, fp);
 
@@ -140,6 +169,12 @@ Movie *readFromFile() {
       newMovie->primaryTitle = malloc((varPos + 1) * sizeof(char));
       strcpy(newMovie->primaryTitle, tempPrimaryTitle);
 
+      /* Set lowerTitle */
+      newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
+      newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->primaryTitle);
+      strcat(newMovie->lowerTitle, tempTconst);
+      newMovie->lowerTitle = removeArticles(newMovie->lowerTitle);
+
       /* Find originalTitle */
       linePos++;
       varPos = 0;
@@ -159,11 +194,6 @@ Movie *readFromFile() {
       tempOriginalTitle[varPos] = '\0';
       newMovie->originalTitle = malloc((varPos + 1) * sizeof(char));
       strcpy(newMovie->originalTitle, tempOriginalTitle);
-
-      /* Set lowerTitle */
-      newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
-      newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->primaryTitle);
-      strcat(newMovie->lowerTitle, tempTconst);
 
       /* Find isAdult */
       linePos++;
@@ -468,7 +498,106 @@ Movie *readFromFile() {
       numMovies++;
     }
   }
-  printf("\nSuccessfully Loaded %d Movies\n\n", numMovies);
+  printf("Successfully Loaded %d Movies\n", numMovies);
+  fclose(fp);
+
+  return root;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+UserMovie *readUserFile(char *filename) {
+  FILE *fp;
+  fp = fopen(filename, "r");
+
+  if (fp == NULL) {
+   printf("%s\n", "Error in opening user file");
+   return(NULL);
+  }
+
+  int numMovies = 0;
+  char currLine[500];
+  char tempPrimaryTitle[200];
+  char tempTconst[8];
+  char tempYear[5];
+  int linePos = 0;
+  int varPos = 0;
+  UserMovie *root = malloc(sizeof(UserMovie));
+  root = NULL;
+
+  printf("\n\nLoading User Movie Data...\n");
+  while (!feof(fp)) {
+    fgets(currLine, 500, fp);
+
+   UserMovie *newMovie = malloc(sizeof(UserMovie));
+
+    /*  Find tconst */
+    for (int i = 2; i < 9; i++) {
+      tempTconst[i - 2] = currLine[i];
+    }
+    tempTconst[7] = '\0';
+    newMovie->tconst = atoi(tempTconst);
+
+    /*  Find title */
+    linePos = 10;
+    varPos = 0;
+    while (currLine[linePos] != '	' && varPos < 200) {
+      tempPrimaryTitle[varPos] = currLine[linePos];
+      linePos++;
+      varPos++;
+    }
+    tempPrimaryTitle[varPos] = '\0';
+    newMovie->title = malloc((varPos + 1) * sizeof(char));
+    strcpy(newMovie->title, tempPrimaryTitle);
+
+    /* find lowerTitle */
+    newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
+    newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->title);
+    strcat(newMovie->lowerTitle, tempTconst);
+
+    /* find startYear */
+    linePos++;
+    if (currLine[linePos] == '0') {
+      newMovie->startYear = 0;
+      linePos++;
+    }
+    else {
+      for (varPos = 0; varPos < 4; varPos++) {
+        tempYear[varPos] = currLine[linePos];
+        linePos++;
+      }
+      tempYear[varPos] = '\0';
+      newMovie->startYear = atoi(tempYear);
+    }
+
+    /* find ownershipType */
+    linePos++;
+    newMovie->ownershipType = currLine[linePos];
+
+    /* find mAquired */
+    linePos += 2;
+    newMovie->mAquired = (10 * (currLine[linePos] -'0')) + (currLine[linePos + 1] - '0');
+
+    /* find dAquired */
+    linePos += 3;
+    newMovie->dAquired = (10 * (currLine[linePos] -'0')) + (currLine[linePos + 1] - '0');
+
+    /* find yAquired */
+    linePos += 3;
+    newMovie->yAquired = (1000 * (currLine[linePos] -'0')) + (100 * (currLine[linePos + 1] - '0')) +
+        (10 * (currLine[linePos + 2] - '0')) + (currLine[linePos + 3] - '0');
+
+    newMovie->left = NULL;
+    newMovie->right = NULL;
+    newMovie->height = 1;
+
+    root = insertUser(root, newMovie);
+    numMovies++;
+  }
+
+  printf("Successfully Loaded %d Movies\n", numMovies - 1);
   fclose(fp);
 
   return root;
@@ -493,10 +622,6 @@ char *strLower(char *dest, char *src) {
 /*                                                                            */
 /******************************************************************************/
 
-/******************************************************************************/
-/*                                                                            */
-/******************************************************************************/
-
 Movie *movieCopy(Movie *dest, Movie *src) {
   dest->tconst = src->tconst;
   dest->primaryTitle = src->primaryTitle;
@@ -512,3 +637,56 @@ Movie *movieCopy(Movie *dest, Movie *src) {
 
   return dest;
 }
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+void clearIn() {
+  char tempChar = 0;
+  scanf("%c", &tempChar);
+  while (tempChar != '\n') {
+    scanf("%c", &tempChar);
+  }
+  return;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/
+
+char *removeArticles(char *str) {
+  if (str[0] == 'T' || str[0] == 't') {
+    if (str[1] == 'H' || str[1] == 'h') {
+      if (str[2] == 'E' || str[2] == 'e') {
+        if (str[3] == ' ') {
+          int len = strlen(str);
+          for (int i = 0; i < len - 4; i++) {
+            str[i] = str[i + 4];
+          }
+          for (int i = 0; i < 4; i++) {
+            str[len - i] =  '\0';
+          }
+          return str;
+        }
+      }
+    }
+  }
+  else if (str[0] == 'A' || str[0] == 'a') {
+    if (str[1] == ' ') {
+      int len = strlen(str);
+      for (int i = 0; i < len - 2; i++) {
+        str[i] = str[i + 2];
+      }
+      for (int i = 0; i < 2; i++) {
+        str[len - i] =  '\0';
+      }
+      return str;
+    }
+  }
+  return str;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/******************************************************************************/

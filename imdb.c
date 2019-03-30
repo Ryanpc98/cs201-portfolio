@@ -11,32 +11,27 @@ int main(void) {
   //  userFilename[i] = '\0';
   //}
 
-  //userFilename = userLogin();
+  //userFilename = getUserFilename();
+  //userLogin(userFilename);
 
   time_t before = time(NULL); /* start time */
 
   Movie *masterRoot = malloc(sizeof(Movie));
-  masterRoot = readFromFile();
-  //preOrder(masterRoot);
+  masterRoot = readImdbFile();
 
-  //UserMovie *userRoot;
+  UserMovie *userRoot = malloc(sizeof(UserMovie));
+  userRoot = readUserFile("sample.log");
+  preOrderUser(userRoot);
+  printf("\n\n\n");
 
-  Movie *searchRoot = malloc(sizeof(Movie));
-  searchRoot = NULL;
-  //searchRoot = titleSearch(masterRoot, searchRoot, "stardust");
-  //preOrder(searchRoot);
-  //searchRoot = NULL;
-  searchRoot = titleSearch(masterRoot, searchRoot, "dragon's realm");
-  preOrder(searchRoot);
-
-
-  //FILE *fp;
-  //fp = fopen(userFilename, "w");
-  //saveFile(fp, userRoot);
-  //fclose(fp);
+  UserMovie *asdf = selectTitleToAdd(masterRoot);
+  userRoot = insertUser(userRoot, asdf);
+  preOrderUser(userRoot);
 
   time_t diff = time(NULL) - before;
-  printf("\n\nTime taken: %ld s\n", diff); /* end time */
+  printf("\nTime taken: %ld s\n", diff); /* end time */
+
+  //free(userFilename);
 
   return 0;
 }
