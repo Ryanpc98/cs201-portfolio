@@ -53,6 +53,8 @@ void clearIn();
 
 char *removeArticles(char *str);
 
+char encodeGenre(char *genre);
+
 /* avl.c */
 /* Contains all the borrowed code */
   /* Specifically the code for managing the avl tree */
@@ -113,6 +115,8 @@ void printRt(Movie *movieList, int lower, int higher);
 UserMovie *selectTitleToAdd(Movie *masterTreeNode);
 
 UserMovie *selectTitleToRemove(UserMovie *userRoot);
+
+UserMovie *selectTitleToModify(UserMovie *userRoot);
 
 void selectMovie();
 

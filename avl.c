@@ -188,7 +188,6 @@ UserMovie* insertUser(UserMovie* currMovie, UserMovie *newMovie) {
   /* 1.  Perform the normal BST insertion */
   if (currMovie == NULL)
       return newMovie;
-
   if (strcmp(newMovie->lowerTitle, currMovie->lowerTitle) < 0) {
     currMovie->left  = insertUser(currMovie->left, newMovie);
   }
@@ -276,7 +275,8 @@ UserMovie* deleteNode(UserMovie* root, char *lowerTitle) {
 
   // if lowerTitle is same as root's lowerTitle, then This is
   // the node to be deleted
-  else {
+  else if(strcmp(lowerTitle, root->lowerTitle) == 0) {
+    printf("deleting - %s : %s\n", lowerTitle, root->lowerTitle);
     // node with only one child or no child
     if((root->left == NULL) || (root->right == NULL)){
       UserMovie *temp = root->left ? root->left : root->right;

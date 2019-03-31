@@ -44,7 +44,6 @@ Movie *titleSearchExact(Movie *masterTreeNode, Movie *searchMatch, char *searchT
   if (masterTreeNode == NULL) {
     return searchMatch;
   }
-  printf("%s - %s\n", searchTitle, masterTreeNode->lowerTitle);
   int searchTitleLen = strlen(searchTitle);
 
   if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
@@ -64,7 +63,6 @@ UserMovie *titleSearchExactUser(UserMovie *masterTreeNode, UserMovie *searchMatc
   if (masterTreeNode == NULL) {
     return searchMatch;
   }
-  printf("%s - %s\n", searchTitle, masterTreeNode->lowerTitle);
   int searchTitleLen = strlen(searchTitle);
 
   if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {

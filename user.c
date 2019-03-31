@@ -22,16 +22,14 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
     userTitle[i] = tolower(tempChar);
     i++;
     if (i >= 195) {
-      /* clear out the rest of input */
       clearIn();
+      break;
     }
     scanf("%c", &tempChar);
   }
   userTitle[i] = '\0';
 
   if (!strcmp(userTitle, "!back")) {
-    //do something else
-    printf("back\n");
     return NULL;
   }
 
@@ -52,7 +50,6 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
         userTitle[i] = tempChar;
         i++;
         if (i >= 195) {
-          /* clear out the rest of input */
           clearIn();
         }
         scanf("%c", &tempChar);
@@ -61,7 +58,6 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
       userTitle[i] = '\0';
 
       if (!strcmp(userTitle, "!back")) {
-        //do something else
         printf("back\n");
         return NULL;
       }
@@ -70,8 +66,10 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
       }
     }
     newUserMovie->tconst = movieChoice->tconst;
+    newUserMovie->title = malloc((strlen(movieChoice->primaryTitle) + 1) * sizeof(char));
     newUserMovie->title = movieChoice->primaryTitle;
-    newUserMovie->lowerTitle = movieChoice->lowerTitle;
+    newUserMovie->lowerTitle = malloc((strlen(movieChoice->lowerTitle) + 2) * sizeof(char));
+    newUserMovie->lowerTitle = strcat(newUserMovie->lowerTitle, movieChoice->lowerTitle);
     newUserMovie->startYear = movieChoice->startYear;
     newUserMovie->height = 1;
     newUserMovie->left = NULL;
@@ -103,9 +101,9 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
         if (isdigit(tempDate[6]) && isdigit(tempDate[7]) && isdigit(tempDate[8]) && isdigit(tempDate[9])) {
           newUserMovie->yAquired = (1000 * (tempDate[6] - '0')) + (100 * (tempDate[7] - '0'))
                 + (10 * (tempDate[8] - '0')) + (tempDate[9] - '0');
+          return newUserMovie;
         }
       }
-      return newUserMovie;
     }
     clearIn();
     while(1) {
@@ -123,9 +121,9 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
           if (isdigit(tempDate[6]) && isdigit(tempDate[7]) && isdigit(tempDate[8]) && isdigit(tempDate[9])) {
             newUserMovie->yAquired = (1000 * (tempDate[6] - '0')) + (100 * (tempDate[7] - '0'))
                   + (10 * (tempDate[8] - '0')) + (tempDate[9] - '0');
+            return newUserMovie;
           }
         }
-        return newUserMovie;
       }
       clearIn();
     }
@@ -151,15 +149,14 @@ UserMovie *selectTitleToRemove(UserMovie *userRoot) {
     userTitle[i] = tolower(tempChar);
     i++;
     if (i >= 195) {
-      /* clear out the rest of input */
       clearIn();
+      break;
     }
     scanf("%c", &tempChar);
   }
   userTitle[i] = '\0';
 
   if (!strcmp(userTitle, "!back")) {
-    //do something else
     printf("back\n");
     return NULL;
   }
@@ -190,10 +187,10 @@ UserMovie *selectTitleToRemove(UserMovie *userRoot) {
       userTitle[i] = '\0';
 
       if (!strcmp(userTitle, "!back")) {
-        //do something else
         printf("back\n");
         return NULL;
       }
+
       else {
         userTitle = removeArticles(userTitle);
 
@@ -208,7 +205,7 @@ UserMovie *selectTitleToRemove(UserMovie *userRoot) {
 /*                                                                            */
 /******************************************************************************/
 
-UserMovie *selectTitleToModify() {
+UserMovie *selectTitleToModify(UserMovie *userRoot) {
   char tempChar;
   char *userTitle = malloc(196 * sizeof(char));
 
@@ -220,8 +217,8 @@ UserMovie *selectTitleToModify() {
     userTitle[i] = tolower(tempChar);
     i++;
     if (i >= 195) {
-      /* clear out the rest of input */
       clearIn();
+      break;
     }
     scanf("%c", &tempChar);
   }

@@ -29,8 +29,7 @@ char *getUserFilename() {
         printf("%c", userName[i - j]);
       }
       printf("\n\n");
-      /* clear out the rest of input */
-      clearIn();
+      break;
     }
     scanf("%c", &tempChar);
   }
@@ -38,7 +37,6 @@ char *getUserFilename() {
   char *userFilename = malloc((strlen(userName) + 1) * sizeof(char));
   strcpy(userFilename, userName);
   strcat(userFilename, ".log");
-  printf("%s\n", userFilename);
   return userFilename;
 }
 
@@ -555,6 +553,7 @@ UserMovie *readUserFile(char *filename) {
     /* find lowerTitle */
     newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
     newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->title);
+    newMovie->lowerTitle = removeArticles(newMovie->lowerTitle);
     strcat(newMovie->lowerTitle, tempTconst);
 
     /* find startYear */
@@ -664,7 +663,7 @@ char *removeArticles(char *str) {
           for (int i = 0; i < len - 4; i++) {
             str[i] = str[i + 4];
           }
-          for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < 5; i++) {
             str[len - i] =  '\0';
           }
           return str;
@@ -678,7 +677,7 @@ char *removeArticles(char *str) {
       for (int i = 0; i < len - 2; i++) {
         str[i] = str[i + 2];
       }
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < 3; i++) {
         str[len - i] =  '\0';
       }
       return str;
@@ -690,3 +689,225 @@ char *removeArticles(char *str) {
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
+
+char encodeGenre(char *genre) {
+  genre = strLower(genre, genre);
+  int i = 0;
+  while (1) {
+    /* A */
+    if (genre[i] == 'a') {
+      i++;
+      if (genre[i] == 'c') { //Action
+        return 'a';
+      }
+      else if (genre[i] == 'd') {
+        i++;
+        if (genre[i] == 'v') { //Adventure
+          return 'b';
+          i++;
+        }
+        else if (genre[i] == 'u') { //Adult
+          return 'c';
+          i++;
+        }
+        else {
+          printf("genre error at %s \n", genre);
+          break;
+        }
+      }
+      else if (genre[i] == 'n') { //Animation
+        return 'd';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* B */
+    else if (genre[i] == 'b') { //Biography
+      return 'e';
+      i++;
+    }
+    /* C */
+    else if (genre[i] == 'c') {
+      i++;
+      if (genre[i] == 'o') { //Comedy
+        return 'f';
+        i++;
+      }
+      else if (genre[i] == 'r') { //Crime
+        return 'g';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* D */
+    else if (genre[i] == 'd') {
+      i++;
+      if (genre[i] == 'o') { //Documentary
+        return 'h';
+        i++;
+      }
+      else if (genre[i] == 'r') { //Drama
+        return 'i';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* F */
+    else if (genre[i] == 'g') {
+      i++;
+      if (genre[i] == 'a') {
+        i++;
+        if (genre[i] == 'm') { //Family
+          return 'j';
+          i++;
+        }
+        else if (genre[i] == 'n') { //Fantasy
+          return 'k';
+          i++;
+        }
+        else {
+          printf("genre error at %s \n", genre);
+          break;
+        }
+      }
+      else if (genre[i] == 'i') { //Film-Noir
+        return 'l';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* G */
+    else if (genre[i] == 'g') { //Game-Show
+      return 'm';
+      i++;
+    }
+    /* H */
+    else if (genre[i] == 'h') {
+      i++;
+      if (genre[i] == 'i') { //History
+        return 'n';
+        i++;
+      }
+      else if (genre[i] == 'o') { //Horror
+        return 'o';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* M */
+    else if (genre[i] == 'm') {
+      i++;
+      if (genre[i] == 'u') {
+        if (!isalpha(genre[i])) { //Music
+          return 'p';
+          i++;
+        }
+        else if (genre[i] == 'a') { //Musical
+          return 'q';
+          i++;
+        }
+        else {
+          printf("genre error at %s \n", genre);
+          break;
+        }
+      }
+      else if (genre[i] == 'y') { //Mystery
+        return 'r';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* N */
+    else if (genre[i] == 'n') { //News
+      return 's';
+      i++;
+    }
+    /* R */
+    else if (genre[i] == 'r') {
+      i++;
+      if (genre[i] == 'o') { //Romance
+        return 't';
+        i++;
+      }
+      else if (genre[i] == 'e') { //Reality-TV
+        return 'u';
+        i++;
+      }
+    }
+    /* S */
+    else if (genre[i] == 's') {
+      i++;
+      if (genre[i] == 'c') { //Sci Fi
+        return 'v';
+        i++;
+      }
+      else if (genre[i] == 'h') { //Short
+        return 'w';
+        i++;
+      }
+      else if (genre[i] == 'p') { //Sport
+        return 'x';
+        i++;
+      }
+      else if (genre[i] == 'u') { //Superhero
+        return 'y';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    /* T */
+    else if (genre[i] == 't') {
+      i++;
+      if (genre[i] == 'a') { //Talk-Show
+        return 'z';
+        i++;
+      }
+      else if (genre[i] == 'h') { //Thriller
+        return 'A';
+        i++;
+      }
+    }
+    /* W */
+    else if (genre[i] == 'w') {
+      i++;
+      if (genre[i] == 'a') { //War
+        return 'B';
+        i++;
+      }
+      else if (genre[i] == 'e') { //Western
+        return 'C';
+        i++;
+      }
+      else {
+        printf("genre error at %s \n", genre);
+        break;
+      }
+    }
+    else {
+      printf("genre error at %s \n", genre);
+      break;
+    }
+  }
+  return '0';
+}
