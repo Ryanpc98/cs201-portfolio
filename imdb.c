@@ -28,6 +28,10 @@ int main(void) {
   userRoot = insertUser(userRoot, asdf);
   preOrderUser(userRoot);
 
+  clearIn();
+  UserMovie *qwert = selectTitleToRemove(userRoot);
+  preOrderUser(qwert);
+
   time_t diff = time(NULL) - before;
   printf("\nTime taken: %ld s\n", diff); /* end time */
 

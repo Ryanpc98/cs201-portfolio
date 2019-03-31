@@ -42,6 +42,7 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
     movieChoice = NULL;
     movieChoice = malloc(sizeof(Movie));
     movieChoice = titleSearchExact(masterTreeNode, movieChoice, userTitle);
+
     while (movieChoice == NULL) {
       printf("Enter the title of the movie you wish to add to your list or\n");
       printf("!back to go back\n");
@@ -138,17 +139,139 @@ UserMovie *selectTitleToAdd(Movie *masterTreeNode) {
 /******************************************************************************/
 
 /* Allows the user to select a title from their list to remove */
-/*UserMovie *selectTitleToRemove() {
-  return NULL;
-}*/
+UserMovie *selectTitleToRemove(UserMovie *userRoot) {
+  char tempChar;
+  char *userTitle = malloc(196 * sizeof(char));
+
+  printf("Enter the title of the movie you wish to remove from your list or\n");
+  printf("!back to go back\n");
+  int i = 0;
+  scanf("%c", &tempChar);
+  while (tempChar != '\n') {
+    userTitle[i] = tolower(tempChar);
+    i++;
+    if (i >= 195) {
+      /* clear out the rest of input */
+      clearIn();
+    }
+    scanf("%c", &tempChar);
+  }
+  userTitle[i] = '\0';
+
+  if (!strcmp(userTitle, "!back")) {
+    //do something else
+    printf("back\n");
+    return NULL;
+  }
+
+  else {
+    userTitle = removeArticles(userTitle);
+
+    UserMovie *movieChoice;
+    movieChoice = NULL;
+    movieChoice = malloc(sizeof(UserMovie));
+    movieChoice = titleSearchExactUser(userRoot, movieChoice, userTitle);
+
+    while (movieChoice == NULL) {
+      printf("Enter the title of the movie you wish to remove from your list or\n");
+      printf("!back to go back\n");
+      i = 0;
+      scanf("%c", &tempChar);
+      while (tempChar != '\n') {
+        userTitle[i] = tempChar;
+        i++;
+        if (i >= 195) {
+          /* clear out the rest of input */
+          clearIn();
+        }
+        scanf("%c", &tempChar);
+        userTitle[i] = tolower(tempChar);
+      }
+      userTitle[i] = '\0';
+
+      if (!strcmp(userTitle, "!back")) {
+        //do something else
+        printf("back\n");
+        return NULL;
+      }
+      else {
+        userTitle = removeArticles(userTitle);
+
+        movieChoice = titleSearchExactUser(userRoot, movieChoice, userTitle);
+      }
+    }
+    return movieChoice;
+  }
+}
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
-/*UserMovie *selectTitleToModify() {
-  return NULL;
-}*/
+UserMovie *selectTitleToModify() {
+  char tempChar;
+  char *userTitle = malloc(196 * sizeof(char));
+
+  printf("Enter the title of the movie you wish to modify or\n");
+  printf("!back to go back\n");
+  int i = 0;
+  scanf("%c", &tempChar);
+  while (tempChar != '\n') {
+    userTitle[i] = tolower(tempChar);
+    i++;
+    if (i >= 195) {
+      /* clear out the rest of input */
+      clearIn();
+    }
+    scanf("%c", &tempChar);
+  }
+  userTitle[i] = '\0';
+
+  if (!strcmp(userTitle, "!back")) {
+    //do something else
+    printf("back\n");
+    return NULL;
+  }
+
+  else {
+    userTitle = removeArticles(userTitle);
+
+    UserMovie *movieChoice;
+    movieChoice = NULL;
+    movieChoice = malloc(sizeof(UserMovie));
+    movieChoice = titleSearchExactUser(userRoot, movieChoice, userTitle);
+
+    while (movieChoice == NULL) {
+      printf("Enter the title of the movie you wish to modify or\n");
+      printf("!back to go back\n");
+      i = 0;
+      scanf("%c", &tempChar);
+      while (tempChar != '\n') {
+        userTitle[i] = tempChar;
+        i++;
+        if (i >= 195) {
+          /* clear out the rest of input */
+          clearIn();
+        }
+        scanf("%c", &tempChar);
+        userTitle[i] = tolower(tempChar);
+      }
+      userTitle[i] = '\0';
+
+      if (!strcmp(userTitle, "!back")) {
+        //do something else
+        printf("back\n");
+        return NULL;
+      }
+      else {
+        userTitle = removeArticles(userTitle);
+
+        movieChoice = titleSearchExactUser(userRoot, movieChoice, userTitle);
+      }
+    }
+    return movieChoice;
+  }
+}
 
 /******************************************************************************/
 /*                                                                            */

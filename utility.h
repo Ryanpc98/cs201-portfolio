@@ -93,6 +93,7 @@ void printNextTen(int *tconstArray, Movie *movieList, int start);
 Movie *titleSearchAll(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle);
 
 Movie *titleSearchExact(Movie *masterTreeNode, Movie *searchMatch, char *searchTitle);
+UserMovie *titleSearchExactUser(UserMovie *masterTreeNode, UserMovie *searchMatch, char *searchTitle);
 
 Movie *genreFilter(Movie *root, Movie *resultTree, char genre);
 
@@ -111,7 +112,7 @@ void printRt(Movie *movieList, int lower, int higher);
 
 UserMovie *selectTitleToAdd(Movie *masterTreeNode);
 
-//UserMovie *selectTitleToRemove(Movie *movieList, UserMovie *userArray);
+UserMovie *selectTitleToRemove(UserMovie *userRoot);
 
 void selectMovie();
 
