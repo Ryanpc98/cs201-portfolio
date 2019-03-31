@@ -36,6 +36,32 @@ Movie *titleSearchAll(Movie *masterTreeNode, Movie *searchMatches, char *searchT
   return NULL;
 }
 
+UserMovie *titleSearchAllUser(UserMovie *masterTreeNode, UserMovie *searchMatches, char *searchTitle) {
+  if (masterTreeNode == NULL) {
+    return searchMatches;
+  }
+
+  int searchTitleLen = strlen(searchTitle);
+
+  if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) < 0) {
+    return titleSearchAllUser(masterTreeNode->left, searchMatches, searchTitle);
+  }
+  else if (strncmp(searchTitle, masterTreeNode->lowerTitle, searchTitleLen) > 0) {
+    return titleSearchAllUser(masterTreeNode->right, searchMatches, searchTitle);
+  }
+  else {
+    UserMovie *newMatch = malloc(sizeof(UserMovie));
+    newMatch = movieCopyUser(newMatch, masterTreeNode);
+    searchMatches = insertUser(searchMatches, newMatch);
+
+    searchMatches = titleSearchAllUser(masterTreeNode->left, searchMatches, searchTitle);
+    searchMatches = titleSearchAllUser(masterTreeNode->right, searchMatches, searchTitle);
+
+    return searchMatches;
+  }
+  return NULL;
+}
+
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/

@@ -14,7 +14,6 @@ char *getUserFilename() {
   for (int i = 0; i < 100; i++) {
     userName[i] = '\0';
   }
-  printf("Please enter your username: ");
   char tempChar = 0;
   int i = 0;
   scanf("%c", &tempChar);
@@ -47,7 +46,7 @@ char *getUserFilename() {
 /* Determines if user already exists or not */
 /* If they do exist is opens their .log file */
 /* If not, it creates a new one */
-void userLogin(char *userFilename) {
+int userLogin(char *userFilename) {
   char choice;
 
   /* Open File */
@@ -68,11 +67,11 @@ void userLogin(char *userFilename) {
 
    if (choice == 'y') {
      fclose(fp);
-     return;
+     return 1;
    }
    else if (choice == 'n') {
      fclose(fp);
-     return userLogin(getUserFilename());
+     return -1;
    }
  }
 
@@ -89,16 +88,15 @@ void userLogin(char *userFilename) {
 
    if (choice == 'y') {
      fclose(fp);
-     return;
+     return 1;
    }
    else if (choice == 'n') {
      printf("\nPlease try a different username\n");
      fclose(fp);
-     return userLogin(getUserFilename());
+     return -1;
    }
  }
-
- return;
+ return -2;
 }
 
 /******************************************************************************/
@@ -551,10 +549,10 @@ UserMovie *readUserFile(char *filename) {
     strcpy(newMovie->title, tempPrimaryTitle);
 
     /* find lowerTitle */
-    newMovie->lowerTitle = malloc((varPos + 8) * sizeof(char));
+    newMovie->lowerTitle = malloc((varPos + 10) * sizeof(char));
     newMovie->lowerTitle = strLower(newMovie->lowerTitle, newMovie->title);
     newMovie->lowerTitle = removeArticles(newMovie->lowerTitle);
-    strcat(newMovie->lowerTitle, tempTconst);
+    int titleLen = strlen(newMovie->lowerTitle);
 
     /* find startYear */
     linePos++;
@@ -575,8 +573,11 @@ UserMovie *readUserFile(char *filename) {
     linePos++;
     newMovie->ownershipType = currLine[linePos];
 
+    int yearStart = 0;
+
     /* find mAquired */
     linePos += 2;
+    yearStart = linePos;
     newMovie->mAquired = (10 * (currLine[linePos] -'0')) + (currLine[linePos + 1] - '0');
 
     /* find dAquired */
@@ -587,6 +588,16 @@ UserMovie *readUserFile(char *filename) {
     linePos += 3;
     newMovie->yAquired = (1000 * (currLine[linePos] -'0')) + (100 * (currLine[linePos + 1] - '0')) +
         (10 * (currLine[linePos + 2] - '0')) + (currLine[linePos + 3] - '0');
+
+    int j = 0;
+    for (int i = 0; i < 10; i++) {
+      if (i != 2 && i != 5) {
+        newMovie->lowerTitle[j + titleLen] = currLine[yearStart + i];
+        j++;
+      }
+    }
+    newMovie->lowerTitle[titleLen + 8] = newMovie->ownershipType;
+    newMovie->lowerTitle[titleLen + 9] = '\0';
 
     newMovie->left = NULL;
     newMovie->right = NULL;
@@ -630,6 +641,22 @@ Movie *movieCopy(Movie *dest, Movie *src) {
   dest->startYear = src->startYear;
   dest->runtime = src->runtime;
   dest->genres = src->genres;
+  dest->height = 1;
+  dest->left = NULL;
+  dest->right = NULL;
+
+  return dest;
+}
+
+UserMovie *movieCopyUser(UserMovie *dest, UserMovie *src) {
+  dest->tconst = src->tconst;
+  dest->title = src->title;
+  dest->lowerTitle = src->lowerTitle;
+  dest->startYear = src->startYear;
+  dest->ownershipType = src->ownershipType;
+  dest->mAquired = src->mAquired;
+  dest->dAquired = src->dAquired;
+  dest->yAquired = src->yAquired;
   dest->height = 1;
   dest->left = NULL;
   dest->right = NULL;

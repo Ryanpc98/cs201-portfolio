@@ -39,7 +39,7 @@ typedef struct _usermovie {
 
 char *getUserFilename();
 
-void userLogin(char *userFilename);
+int userLogin(char *userFilename);
 
 Movie *readImdbFile();
 
@@ -48,6 +48,8 @@ UserMovie *readUserFile(char *filename);
 char *strLower(char *dest, char *src);
 
 Movie *movieCopy(Movie *dest, Movie *src);
+UserMovie *movieCopyUser(UserMovie *dest, UserMovie *src);
+
 
 void clearIn();
 
@@ -83,7 +85,16 @@ UserMovie* deleteNode(UserMovie* root, char *lowerTitle);
 
 void preOrder(Movie *root);
 void preOrderUser(UserMovie *root);
+void preOrderUserLower(UserMovie *root);
 
+void deleteTree(Movie* node);
+void deleteTreeUser(UserMovie* node);
+
+int MorrisTraversal(Movie* root);
+int MorrisTraversalUser(UserMovie* root);
+
+Movie *MorrisTraversalFind(Movie* root, int choice);
+UserMovie *MorrisTraversalFindUser(UserMovie* root, int choice);
 
 /* searches.c */
 /* Contains all functions relevant to the searching and filtering of data */
@@ -93,6 +104,7 @@ void searchPrint(int *tconstArray, Movie *movieList);
 void printNextTen(int *tconstArray, Movie *movieList, int start);
 
 Movie *titleSearchAll(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle);
+UserMovie *titleSearchAllUser(UserMovie *masterTreeNode, UserMovie *searchMatches, char *searchTitle);
 
 Movie *titleSearchExact(Movie *masterTreeNode, Movie *searchMatch, char *searchTitle);
 UserMovie *titleSearchExactUser(UserMovie *masterTreeNode, UserMovie *searchMatch, char *searchTitle);
@@ -112,7 +124,7 @@ void printRt(Movie *movieList, int lower, int higher);
 /* user.c */
 /* Contains all functions used to manage user information */
 
-UserMovie *selectTitleToAdd(Movie *masterTreeNode);
+UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice);
 
 UserMovie *selectTitleToRemove(UserMovie *userRoot);
 

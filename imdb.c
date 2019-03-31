@@ -11,8 +11,17 @@ int main(void) {
     userFilename[i] = '\0';
   }
 
-  userFilename = getUserFilename();
-  userLogin(userFilename);
+  int loginStatus = 0;
+  while (loginStatus != 1) {
+    if (loginStatus == 0) {
+      printf("Please enter a username: ");
+    }
+    else if (loginStatus == -1) {
+      printf("Please enter a new username: ");
+    }
+    userFilename = getUserFilename();
+    loginStatus = userLogin(userFilename);
+  }
 
   Movie *masterRoot = malloc(sizeof(Movie));
   masterRoot = readImdbFile();
@@ -20,7 +29,7 @@ int main(void) {
   UserMovie *userRoot = malloc(sizeof(UserMovie));
   userRoot = readUserFile(userFilename);
 
-  char menuChoice = '0';
+  char menuChoice = 'a';
   while (1) {
     printf("\n\n");
     printf("Please Select an Option Below:\n");
@@ -49,6 +58,7 @@ int main(void) {
         i++;
         if (i >= 195) {
           clearIn();
+          menuChoice = 'a';
           break;
         }
         scanf("%c", &tempChar);
@@ -61,12 +71,15 @@ int main(void) {
       if (searchMatches == NULL) {
         printf("\n\n");
         printf("No movies with given title found, returning to menu\n");
+        menuChoice = 'a';
         continue;
       }
 
       /* Matche(s) Found */
       else {
-        UserMovie *movieToAdd = malloc(sizeof(UserMovie));
+        //UserMovie *movieToAdd = malloc(sizeof(UserMovie));
+        UserMovie *movieToAdd;
+        Movie *movieChoice = malloc(sizeof(Movie));
         movieToAdd = NULL;
         preOrder(searchMatches);
 
@@ -89,6 +102,7 @@ int main(void) {
           /* return */
           if (menuChoice == '0') {
             printf("\nReturning to Menu\n");
+            menuChoice = 'a';
             break;
           }
 
@@ -110,6 +124,7 @@ int main(void) {
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
+            menuChoice = 'a';
           }
 
           /* Filter by year */
@@ -135,6 +150,7 @@ int main(void) {
                 if (!isdigit(tempDateChar) && i != 4) {
                   printf("Error, invalid date(s)\n\n\n");
                   clearIn();
+                  menuChoice = 'a';
                   break;
                 }
                 if (i < 4) {
@@ -154,6 +170,7 @@ int main(void) {
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
+            menuChoice = 'a';
           }
 
           /* Filter by rt */
@@ -179,6 +196,7 @@ int main(void) {
                 if (!isdigit(tempRTChar) && i != 3) {
                   printf("Error, invalid runtimes(s)\n\n\n");
                   clearIn();
+                  menuChoice = 'a';
                   break;
                 }
                 if (i < 3) {
@@ -198,15 +216,47 @@ int main(void) {
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
+            menuChoice = 'a';
           }
 
           /* Add Movie */
           else if (menuChoice == '4') {
-            movieToAdd = selectTitleToAdd(searchMatches);
-            userRoot = insertUser(userRoot, movieToAdd);
+            //movieToAdd = selectTitleToAdd(searchMatches);
+            int key = MorrisTraversal(searchMatches);
+            printf("key: %d\n", key);
+            if (key == -1) {
+              printf("\nReturning to Menu\n");
+              menuChoice = 'a';
+              continue;
+            }
+            else if (key == -2) {
+              key = MorrisTraversal(searchMatches);
+            }
+            else if (key > 0) {
+              movieChoice = MorrisTraversalFind(searchMatches, key);
+              printf("movieChoice: %s\n", movieChoice->lowerTitle);
+              movieToAdd = selectTitleToAdd(movieToAdd, movieChoice);
+              printf("movieToAdd: %s\n", movieToAdd->lowerTitle);
+
+              UserMovie *existingMatch = malloc(sizeof(UserMovie));
+              existingMatch = NULL;
+              existingMatch = titleSearchExactUser(userRoot, existingMatch, movieToAdd->lowerTitle);
+              if (existingMatch == NULL) {
+                free(existingMatch);
+                userRoot = insertUser(userRoot, movieToAdd);
+              }
+              else {
+                free(existingMatch);
+                printf("\n\nError, duplicate entry in user list\n");
+                printf("Returning to menu\n\n");
+                menuChoice = 'a';
+                continue;
+              }
+            }
           }
         }
       }
+      menuChoice = 'a';
       printf("\n\n");
     }
 
@@ -221,6 +271,7 @@ int main(void) {
       /* No Matches */
       if (movieToRemove == NULL) {
         printf("No movie with given title found, returning to menu\n");
+        menuChoice = 'a';
         continue;
       }
 
@@ -238,6 +289,7 @@ int main(void) {
 
       if (movieToModify == NULL) {
         printf("No movie with given title found, returning to menu\n");
+        menuChoice = 'a';
         continue;
       }
 
@@ -255,6 +307,7 @@ int main(void) {
 
       if (menuChoice == '0') {
         printf("Returning to Menu\n");
+        menuChoice = 'a';
         continue;
       }
 
@@ -294,6 +347,7 @@ int main(void) {
               movieToModify->yAquired = (1000 * (tempDate[6] - '0')) + (100 * (tempDate[7] - '0'))
                     + (10 * (tempDate[8] - '0')) + (tempDate[9] - '0');
               clearIn();
+              menuChoice = 'a';
               continue;
             }
           }
@@ -314,6 +368,7 @@ int main(void) {
                 movieToModify->yAquired = (1000 * (tempDate[6] - '0')) + (100 * (tempDate[7] - '0'))
                       + (10 * (tempDate[8] - '0')) + (tempDate[9] - '0');
                 clearIn();
+                menuChoice = 'a';
                 continue;
               }
             }
@@ -329,6 +384,9 @@ int main(void) {
       fpS = fopen(userFilename, "w");
       saveFile(fpS, userRoot);
       fclose(fpS);
+
+      printf("\n\nFile Saved Successfully\n");
+      menuChoice = 'a';
     }
 
     /* Print List */
@@ -336,6 +394,7 @@ int main(void) {
       printf("\n\n");
       preOrderUser(userRoot);
       printf("\n\n");
+      menuChoice = 'a';
     }
 
     /* Quit w/out Saving */
@@ -349,12 +408,13 @@ int main(void) {
         clearIn();
       }
       if (menuChoice == 'n') {
+        menuChoice = 'a';
         continue;
       }
       else if (menuChoice == 'y') {
         free(userFilename);
-        free(masterRoot);
-        free(userRoot);
+        deleteTree(masterRoot);
+        deleteTreeUser(userRoot);
 
         return 0;
       }
@@ -371,6 +431,7 @@ int main(void) {
         clearIn();
       }
       if (menuChoice == 'n') {
+        menuChoice = 'a';
         continue;
       }
       else if (menuChoice == 'y') {
@@ -379,12 +440,22 @@ int main(void) {
         saveFile(fp7, userRoot);
         fclose(fp7);
 
+        printf("\n\nFile Saved Successfully\n");
+
         free(userFilename);
-        free(masterRoot);
-        free(userRoot);
+        deleteTree(masterRoot);
+        deleteTreeUser(userRoot);
 
         return 0;
       }
+    }
+
+    /* print lower titles */
+    if (menuChoice == '$') {
+      printf("\n\n");
+      preOrderUserLower(userRoot);
+      printf("\n\n");
+      menuChoice = 'a';
     }
   }
 
