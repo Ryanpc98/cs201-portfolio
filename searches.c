@@ -9,7 +9,7 @@
 /******************************************************************************/
 
 /* Searches the tree for the specified movie title */
-  /* and returns a pointer to that movie */
+  /* and returns a pointer to a tree of all matching nodes */
 Movie *titleSearchAll(Movie *masterTreeNode, Movie *searchMatches, char *searchTitle) {
   if (masterTreeNode == NULL) {
     return searchMatches;
@@ -66,6 +66,8 @@ UserMovie *titleSearchAllUser(UserMovie *masterTreeNode, UserMovie *searchMatche
 /*                                                                            */
 /******************************************************************************/
 
+/* Same as above but is instead returns only one node back */
+/* Intended to be used with an exact title in the arguments */
 Movie *titleSearchExact(Movie *masterTreeNode, Movie *searchMatch, char *searchTitle) {
   if (masterTreeNode == NULL) {
     return searchMatch;

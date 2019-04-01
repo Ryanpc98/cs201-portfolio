@@ -126,10 +126,4 @@ void printRt(Movie *movieList, int lower, int higher);
 
 UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice);
 
-UserMovie *selectTitleToRemove(UserMovie *userRoot);
-
-UserMovie *selectTitleToModify(UserMovie *userRoot);
-
-void selectMovie();
-
 void saveFile(FILE *fp, UserMovie *root);

@@ -5,7 +5,6 @@
 #include "utility.h"
 
 int main(void) {
-
   char *userFilename = malloc(100 * sizeof(char));
   for (int i = 0; i < 100; i++) {
     userFilename[i] = '\0';
@@ -238,6 +237,9 @@ int main(void) {
               UserMovie *existingMatch = malloc(sizeof(UserMovie));
               existingMatch = NULL;
               existingMatch = titleSearchExactUser(userRoot, existingMatch, movieToAdd->lowerTitle);
+
+              /* check if movie exists already */
+              /* Note, movie must match in title, date purchased and ownership type */
               if (existingMatch == NULL) {
                 free(existingMatch);
                 userRoot = insertUser(userRoot, movieToAdd);
@@ -333,7 +335,7 @@ int main(void) {
         continue;
       }
 
-      /* Ownership type */
+      /* Modify Ownership type */
       else if (menuChoice == '1') {
         char tempOwn;
         printf("Please enter a new ownership type: \n");
@@ -349,7 +351,7 @@ int main(void) {
         movieToModify->ownershipType = tempOwn;
       }
 
-      /* Date */
+      /* Modify Date */
       else if (menuChoice == '2') {
         char tempDate[10];
         for (int i = 0; i < 10; i++) {

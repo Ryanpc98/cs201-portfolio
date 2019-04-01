@@ -1,4 +1,3 @@
-// C program to insert a node in AVL tree
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -240,6 +239,7 @@ UserMovie* insertUser(UserMovie* currMovie, UserMovie *newMovie) {
 /*                                                                            */
 /******************************************************************************/
 
+// Finds the minimum value node of a subtree
 UserMovie * minValueNode(UserMovie* node) {
   UserMovie* current = node;
 
@@ -255,6 +255,7 @@ UserMovie * minValueNode(UserMovie* node) {
 /*                                                                            */
 /******************************************************************************/
 
+// Function to find and delete a node
 UserMovie* deleteNode(UserMovie* root, char *lowerTitle) {
   // STEP 1: PERFORM STANDARD BST DELETE
 
@@ -392,6 +393,7 @@ void preOrderUserLower(UserMovie *root) {
 /*                                                                            */
 /******************************************************************************/
 
+// Function to delete a whole binary tree
 void deleteTree(Movie* node) {
     if (node == NULL) return;
 

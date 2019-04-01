@@ -8,7 +8,8 @@
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
-
+/* Gets filename as input from user */
+/* Ensures that filename is valid length */
 char *getUserFilename() {
   char userName[100];
   for (int i = 0; i < 100; i++) {
@@ -44,8 +45,8 @@ char *getUserFilename() {
 /******************************************************************************/
 
 /* Determines if user already exists or not */
-/* If they do exist is opens their .log file */
-/* If not, it creates a new one */
+/* Prompts the user about whether or not they exist or not but
+   this function does not actually modify any of the text files */
 int userLogin(char *userFilename) {
   char choice;
 
@@ -228,6 +229,10 @@ Movie *readImdbFile() {
       }
 
       /* Find genres */
+
+      /* Fair warning, this part is kind of long and crazy */
+      /* genre_conversions.txt may help a little bit with this
+         since it shows all the genres */
       varPos = 0;
       while (currLine[linePos] != '\n') {
         linePos++;
@@ -504,6 +509,7 @@ Movie *readImdbFile() {
 /*                                                                            */
 /******************************************************************************/
 
+/* Works similarly to readImdbFile() but for the UserMovie information */
 UserMovie *readUserFile(char *filename) {
   FILE *fp;
   fp = fopen(filename, "r");
@@ -617,6 +623,7 @@ UserMovie *readUserFile(char *filename) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Converts all chars in a str to lowercase */
 char *strLower(char *dest, char *src) {
   int len = strlen(src);
 
@@ -632,6 +639,7 @@ char *strLower(char *dest, char *src) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Copies a Movie */
 Movie *movieCopy(Movie *dest, Movie *src) {
   dest->tconst = src->tconst;
   dest->primaryTitle = src->primaryTitle;
@@ -648,6 +656,7 @@ Movie *movieCopy(Movie *dest, Movie *src) {
   return dest;
 }
 
+/* Copies an UserMovie */
 UserMovie *movieCopyUser(UserMovie *dest, UserMovie *src) {
   dest->tconst = src->tconst;
   dest->title = src->title;
@@ -668,6 +677,7 @@ UserMovie *movieCopyUser(UserMovie *dest, UserMovie *src) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Clears out all junk input after a char is read in */
 void clearIn() {
   char tempChar = 0;
   scanf("%c", &tempChar);
@@ -681,6 +691,7 @@ void clearIn() {
 /*                                                                            */
 /******************************************************************************/
 
+/* Removes "the" and "a" from the beginning of strings */
 char *removeArticles(char *str) {
   if (str[0] == 'T' || str[0] == 't') {
     if (str[1] == 'H' || str[1] == 'h') {
@@ -717,6 +728,8 @@ char *removeArticles(char *str) {
 /*                                                                            */
 /******************************************************************************/
 
+/* Takes a string and converts it to the corresponding char */
+/* User genre_conversions.txt for reference if this is confusing */
 char encodeGenre(char *genre) {
   genre = strLower(genre, genre);
   int i = 0;
