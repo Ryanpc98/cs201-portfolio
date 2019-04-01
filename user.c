@@ -12,23 +12,17 @@
 UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice) {
   char tempChar;
   newUserMovie = malloc(sizeof(UserMovie));
-  printf("entered add thingy\n");
-  printf("movieChoice->tconst = %d\n", movieChoice->tconst);
   newUserMovie->tconst = movieChoice->tconst;
-  printf("%d\n", newUserMovie->tconst);
 
   newUserMovie->title = malloc((strlen(movieChoice->primaryTitle) + 1) * sizeof(char));
   newUserMovie->title = movieChoice->primaryTitle;
-  printf("%s\n", newUserMovie->title);
 
   newUserMovie->lowerTitle = malloc((strlen(newUserMovie->title) + 10) * sizeof(char));
   newUserMovie->lowerTitle = strLower(newUserMovie->lowerTitle, movieChoice->primaryTitle);
   newUserMovie->lowerTitle = removeArticles(newUserMovie->lowerTitle);
   int titleLen = strlen(newUserMovie->lowerTitle);
-  printf("%s\n", newUserMovie->lowerTitle);
 
   newUserMovie->startYear = movieChoice->startYear;
-  printf("%d\n", newUserMovie->startYear);
 
   newUserMovie->height = 1;
   newUserMovie->left = NULL;
@@ -111,7 +105,7 @@ UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice) {
 /******************************************************************************/
 
 /* Allows the user to select a title from their list to remove */
-UserMovie *selectTitleToRemove(UserMovie *userRoot) {
+/*UserMovie *selectTitleToRemove(UserMovie *userRoot) {
   char tempChar;
   char *userTitle = malloc(196 * sizeof(char));
   UserMovie *movieChoice;
@@ -152,7 +146,7 @@ UserMovie *selectTitleToRemove(UserMovie *userRoot) {
         userTitle[i] = tempChar;
         i++;
         if (i >= 195) {
-          /* clear out the rest of input */
+          // clear out the rest of input
           clearIn();
         }
         scanf("%c", &tempChar);
@@ -173,13 +167,13 @@ UserMovie *selectTitleToRemove(UserMovie *userRoot) {
     }
     return movieChoice;
   }
-}
+}*/
 
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 
-UserMovie *selectTitleToModify(UserMovie *userRoot) {
+/*UserMovie *selectTitleToModify(UserMovie *userRoot) {
   char tempChar;
   char *userTitle = malloc(196 * sizeof(char));
   UserMovie *movieChoice;
@@ -219,7 +213,7 @@ UserMovie *selectTitleToModify(UserMovie *userRoot) {
         userTitle[i] = tempChar;
         i++;
         if (i >= 195) {
-          /* clear out the rest of input */
+          // clear out the rest of input
           clearIn();
         }
         scanf("%c", &tempChar);
@@ -239,7 +233,7 @@ UserMovie *selectTitleToModify(UserMovie *userRoot) {
     }
     return movieChoice;
   }
-}
+}*/
 
 /******************************************************************************/
 /*                                                                            */

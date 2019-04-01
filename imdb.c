@@ -223,7 +223,6 @@ int main(void) {
           else if (menuChoice == '4') {
             //movieToAdd = selectTitleToAdd(searchMatches);
             int key = MorrisTraversal(searchMatches);
-            printf("key: %d\n", key);
             if (key == -1) {
               printf("\nReturning to Menu\n");
               menuChoice = 'a';
@@ -232,11 +231,9 @@ int main(void) {
             else if (key == -2) {
               key = MorrisTraversal(searchMatches);
             }
-            else if (key > 0) {
+            else if (key >= 0) {
               movieChoice = MorrisTraversalFind(searchMatches, key);
-              printf("movieChoice: %s\n", movieChoice->lowerTitle);
               movieToAdd = selectTitleToAdd(movieToAdd, movieChoice);
-              printf("movieToAdd: %s\n", movieToAdd->lowerTitle);
 
               UserMovie *existingMatch = malloc(sizeof(UserMovie));
               existingMatch = NULL;
@@ -266,7 +263,18 @@ int main(void) {
       movieToRemove = NULL;
       preOrderUser(userRoot);
       printf("\n\n");
-      movieToRemove = selectTitleToRemove(userRoot);
+      int key = MorrisTraversalUser(userRoot);
+      if (key == -1) {
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
+      else if (key == -2) {
+        key = MorrisTraversalUser(userRoot);
+      }
+      else if (key >= 0) {
+        movieToRemove = MorrisTraversalFindUser(userRoot, key);
+      }
 
       /* No Matches */
       if (movieToRemove == NULL) {
@@ -285,14 +293,27 @@ int main(void) {
       movieToModify = NULL;
       preOrderUser(userRoot);
       printf("\n\n");
-      movieToModify = selectTitleToModify(userRoot);
+      int key = MorrisTraversalUser(userRoot);
+      if (key == -1) {
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
+      else if (key == -2) {
+        key = MorrisTraversalUser(userRoot);
+      }
+      else if (key >= 0) {
+        movieToModify = MorrisTraversalFindUser(userRoot, key);
+      }
 
+      /* No Matches */
       if (movieToModify == NULL) {
         printf("No movie with given title found, returning to menu\n");
         menuChoice = 'a';
         continue;
       }
 
+      /* Menu to select attribute to modify */
       printf("%s\n", movieToModify->lowerTitle);
       printf("Select and Attribute to Modify or Press 0 to Quit: \n");
       printf("     1: Ownership Type\n");
@@ -305,12 +326,14 @@ int main(void) {
         clearIn();
       }
 
+      /* Quit */
       if (menuChoice == '0') {
         printf("Returning to Menu\n");
         menuChoice = 'a';
         continue;
       }
 
+      /* Ownership type */
       else if (menuChoice == '1') {
         char tempOwn;
         printf("Please enter a new ownership type: \n");
@@ -326,6 +349,7 @@ int main(void) {
         movieToModify->ownershipType = tempOwn;
       }
 
+      /* Date */
       else if (menuChoice == '2') {
         char tempDate[10];
         for (int i = 0; i < 10; i++) {
