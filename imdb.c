@@ -67,190 +67,201 @@ int main(void) {
       searchMatches = titleSearchAll(masterRoot, searchMatches, searchTitle);
 
       /* No Matches */
-      if (searchMatches == NULL) {
+      while (searchMatches == NULL) {
         printf("\n\n");
-        printf("No movies with given title found, returning to menu\n");
-        menuChoice = 'a';
-        continue;
-      }
-
-      /* Matche(s) Found */
-      else {
-        //UserMovie *movieToAdd = malloc(sizeof(UserMovie));
-        UserMovie *movieToAdd;
-        Movie *movieChoice = malloc(sizeof(Movie));
-        movieToAdd = NULL;
-        preOrder(searchMatches);
-
-        menuChoice = 'a';
-        while (menuChoice != '4') {
-          printf("\n\n");
-          printf("Please Select an Option Below or Press 0 to Return to Menu:\n");
-          printf("     1: Filter Results by Genre\n");
-          printf("     2: Filter Results by Release Year\n");
-          printf("     3: Filter Results by Runtime\n");
-          printf("     4: Select a Movie to Add\n");
-          scanf("%c", &menuChoice);
-          clearIn();
-          while (menuChoice != '0' && menuChoice != '1' && menuChoice != '2' && menuChoice != '3' && menuChoice != '4') {
-            printf("Error, please try again: \n");
-            scanf("%c", &menuChoice);
+        printf("Error, no matching titles found, please try again\n");
+        printf("Enter the title of a movie to search for: ");
+        int i = 0;
+        scanf("%c", &tempChar);
+        while (tempChar != '\n') {
+          searchTitle[i] = tolower(tempChar);
+          i++;
+          if (i >= 195) {
             clearIn();
-          }
-
-          /* return */
-          if (menuChoice == '0') {
-            printf("\nReturning to Menu\n");
             menuChoice = 'a';
             break;
           }
+          scanf("%c", &tempChar);
+        }
+        searchTitle[i] = '\0';
+        searchTitle = removeArticles(searchTitle);
+        searchMatches = titleSearchAll(masterRoot, searchMatches, searchTitle);
+      }
 
-          /* Filter by genre */
-          if (menuChoice == '1') {
-            char genreChoice;
-            Movie *genreMatches = NULL;
+      /* Matche(s) Found */
+      UserMovie *movieToAdd;
+      Movie *movieChoice = malloc(sizeof(Movie));
+      movieToAdd = NULL;
+      preOrder(searchMatches);
+
+      menuChoice = 'a';
+      while (menuChoice != '4') {
+        printf("\n\n");
+        printf("Please Select an Option Below or Press 0 to Return to Menu:\n");
+        printf("     1: Filter Results by Genre\n");
+        printf("     2: Filter Results by Release Year\n");
+        printf("     3: Filter Results by Runtime\n");
+        printf("     4: Select a Movie to Add\n");
+        scanf("%c", &menuChoice);
+        clearIn();
+        while (menuChoice != '0' && menuChoice != '1' && menuChoice != '2' && menuChoice != '3' && menuChoice != '4') {
+          printf("Error, please try again: \n");
+          scanf("%c", &menuChoice);
+          clearIn();
+        }
+
+        /* return */
+        if (menuChoice == '0') {
+          printf("\nReturning to Menu\n");
+          menuChoice = 'a';
+          break;
+        }
+
+        /* Filter by genre */
+        if (menuChoice == '1') {
+          char genreChoice;
+          Movie *genreMatches = NULL;
+          printf("\n\n");
+          printf("Please Select A Genre to Filter By:\n");
+          printf("a: Action\nb: Adventure\nc: Adult\nd: Animation\ne: Biography\nf: Comedy\ng: Crime\nh: Documentary\n");
+          printf("i: Drama\nj: Family\nk: Fantasy\nl: Film-Noir\nm: Game-Show\nn: History\no: Horror\np: Music\nq: Musical\n");
+          printf("r: Mystery\ns: News\nt: Romance\nu: Reality-TV\nv: Sci Fi\nw: Short\nx: Sport\ny: Superhero\nz: Talk-Show\n");
+          printf("A: Thriller\nB: War\nC: Western\n");
+          scanf("%c", &genreChoice);
+          clearIn();
+
+          genreMatches = genreFilter(searchMatches, genreMatches, genreChoice);
+          searchMatches = genreMatches;
+          printf("\n\n");
+          preOrder(searchMatches);
+          printf("\n\n");
+          menuChoice = 'a';
+        }
+
+        /* Filter by year */
+        else if (menuChoice == '2') {
+          int lower = 1;
+          int higher = 0;
+          char tempDateChar;
+          char tempLow[5];
+          for (int i = 0; i < 5; i++) {
+            tempLow[i] = '\0';
+          }
+          char tempHigh[4];
+          for (int i = 0; i < 4; i++) {
+            tempHigh[i] = '\0';
+          }
+          Movie *yearMatches = NULL;
+          while(lower > higher) {
             printf("\n\n");
-            printf("Please Select A Genre to Filter By:\n");
-            printf("a: Action\nb: Adventure\nc: Adult\nd: Animation\ne: Biography\nf: Comedy\ng: Crime\nh: Documentary\n");
-            printf("i: Drama\nj: Family\nk: Fantasy\nl: Film-Noir\nm: Game-Show\nn: History\no: Horror\np: Music\nq: Musical\n");
-            printf("r: Mystery\ns: News\nt: Romance\nu: Reality-TV\nv: Sci Fi\nw: Short\nx: Sport\ny: Superhero\nz: Talk-Show\n");
-            printf("A: Thriller\nB: War\nC: Western\n");
-            scanf("%c", &genreChoice);
+            printf("Enter a range of years to search by in the format (xxxx,yyyy)\n");
+            printf("With xxxx being the lower of the two years\n");
+            printf("If you want to search for a single year, enter the same year twice\n");
+            for (int i = 0; i < 9; i++) {
+              scanf("%c", &tempDateChar);
+              if (!isdigit(tempDateChar) && i != 4) {
+                printf("Error, invalid date(s)\n\n\n");
+                clearIn();
+                menuChoice = 'a';
+                break;
+              }
+              if (i < 4) {
+                tempLow[i] = tempDateChar;
+              }
+              else if (i > 4) {
+                tempHigh[i - 5] = tempDateChar;
+              }
+            }
             clearIn();
-
-            genreMatches = genreFilter(searchMatches, genreMatches, genreChoice);
-            searchMatches = genreMatches;
-            printf("\n\n");
-            preOrder(searchMatches);
-            printf("\n\n");
-            menuChoice = 'a';
+            lower = atoi(tempLow);
+            higher = atoi(tempHigh);
           }
+          yearMatches = yearFilter(searchMatches, yearMatches, lower, higher);
+          searchMatches = yearMatches;
+          printf("\n\n");
+          preOrder(searchMatches);
+          printf("\n\n");
+          menuChoice = 'a';
+        }
 
-          /* Filter by year */
-          else if (menuChoice == '2') {
-            int lower = 1;
-            int higher = 0;
-            char tempDateChar;
-            char tempLow[5];
-            for (int i = 0; i < 5; i++) {
-              tempLow[i] = '\0';
-            }
-            char tempHigh[4];
-            for (int i = 0; i < 4; i++) {
-              tempHigh[i] = '\0';
-            }
-            Movie *yearMatches = NULL;
-            while(lower > higher) {
-              printf("\n\n");
-              printf("Enter a range of years to search by in the format (xxxx,yyyy)\n");
-              printf("With xxxx being the lower of the two years\n");
-              printf("If you want to search for a single year, enter the same year twice\n");
-              for (int i = 0; i < 9; i++) {
-                scanf("%c", &tempDateChar);
-                if (!isdigit(tempDateChar) && i != 4) {
-                  printf("Error, invalid date(s)\n\n\n");
-                  clearIn();
-                  menuChoice = 'a';
-                  break;
-                }
-                if (i < 4) {
-                  tempLow[i] = tempDateChar;
-                }
-                else if (i > 4) {
-                  tempHigh[i - 5] = tempDateChar;
-                }
+        /* Filter by rt */
+        else if (menuChoice == '3') {
+          int lower = 1;
+          int higher = 0;
+          char tempRTChar;
+          char tempLow[4];
+          for (int i = 0; i < 4; i++) {
+            tempLow[i] = '\0';
+          }
+          char tempHigh[4];
+          for (int i = 0; i < 4; i++) {
+            tempHigh[i] = '\0';
+          }
+          Movie *rtMatches = NULL;
+          while(lower > higher) {
+            printf("\n\n");
+            printf("Enter a range of runtimes (in minutes) to search by in the format (xxx,yyy)\n");
+            printf("With xxx being the lower of the two runtimes\n");
+            printf("If you want to search for a single runtime, enter the same value twice\n");
+            for (int i = 0; i < 7; i++) {
+              scanf("%c", &tempRTChar);
+              if (!isdigit(tempRTChar) && i != 3) {
+                printf("Error, invalid runtimes(s)\n\n\n");
+                clearIn();
+                menuChoice = 'a';
+                break;
               }
-              clearIn();
-              lower = atoi(tempLow);
-              higher = atoi(tempHigh);
-            }
-            yearMatches = yearFilter(searchMatches, yearMatches, lower, higher);
-            searchMatches = yearMatches;
-            printf("\n\n");
-            preOrder(searchMatches);
-            printf("\n\n");
-            menuChoice = 'a';
-          }
-
-          /* Filter by rt */
-          else if (menuChoice == '3') {
-            int lower = 1;
-            int higher = 0;
-            char tempRTChar;
-            char tempLow[4];
-            for (int i = 0; i < 4; i++) {
-              tempLow[i] = '\0';
-            }
-            char tempHigh[4];
-            for (int i = 0; i < 4; i++) {
-              tempHigh[i] = '\0';
-            }
-            Movie *rtMatches = NULL;
-            while(lower > higher) {
-              printf("\n\n");
-              printf("Enter a range of runtimes (in minutes) to search by in the format (xxx,yyy)\n");
-              printf("With xxx being the lower of the two runtimes\n");
-              printf("If you want to search for a single runtime, enter the same value twice\n");
-              for (int i = 0; i < 7; i++) {
-                scanf("%c", &tempRTChar);
-                if (!isdigit(tempRTChar) && i != 3) {
-                  printf("Error, invalid runtimes(s)\n\n\n");
-                  clearIn();
-                  menuChoice = 'a';
-                  break;
-                }
-                if (i < 3) {
-                  tempLow[i] = tempRTChar;
-                }
-                else if (i > 3) {
-                  tempHigh[i - 4] = tempRTChar;
-                }
+              if (i < 3) {
+                tempLow[i] = tempRTChar;
               }
-              clearIn();
-              lower = atoi(tempLow);
-              higher = atoi(tempHigh);
+              else if (i > 3) {
+                tempHigh[i - 4] = tempRTChar;
+              }
             }
-            rtMatches = rtFilter(searchMatches, rtMatches, lower, higher);
-            searchMatches = rtMatches;
-            printf("\n\n");
-            preOrder(searchMatches);
-            printf("\n\n");
-            menuChoice = 'a';
+            clearIn();
+            lower = atoi(tempLow);
+            higher = atoi(tempHigh);
           }
+          rtMatches = rtFilter(searchMatches, rtMatches, lower, higher);
+          searchMatches = rtMatches;
+          printf("\n\n");
+          preOrder(searchMatches);
+          printf("\n\n");
+          menuChoice = 'a';
+        }
 
-          /* Add Movie */
-          else if (menuChoice == '4') {
-            //movieToAdd = addUserMovie(searchMatches);
-            int key = MorrisTraversal(searchMatches);
-            if (key == -1) {
-              printf("\nReturning to Menu\n");
+        /* Add Movie */
+        else if (menuChoice == '4') {
+          //movieToAdd = addUserMovie(searchMatches);
+          int key = MorrisTraversal(searchMatches);
+          if (key == -1) {
+            printf("\nReturning to Menu\n");
+            menuChoice = 'a';
+            continue;
+          }
+          else if (key == -2) {
+            key = MorrisTraversal(searchMatches);
+          }
+          else if (key >= 0) {
+            movieChoice = MorrisTraversalFind(searchMatches, key);
+            movieToAdd = addUserMovie(movieToAdd, movieChoice);
+
+            UserMovie *existingMatch = malloc(sizeof(UserMovie));
+            existingMatch = NULL;
+            existingMatch = titleSearchExactUser(userRoot, existingMatch, movieToAdd->lowerTitle);
+
+            /* check if movie exists already */
+            /* Note, movie must match in title, date purchased and ownership type */
+            if (existingMatch == NULL) {
+              free(existingMatch);
+              userRoot = insertUser(userRoot, movieToAdd);
+            }
+            else {
+              free(existingMatch);
+              printf("\n\nError, duplicate entry in user list\n");
+              printf("Returning to menu\n\n");
               menuChoice = 'a';
               continue;
-            }
-            else if (key == -2) {
-              key = MorrisTraversal(searchMatches);
-            }
-            else if (key >= 0) {
-              movieChoice = MorrisTraversalFind(searchMatches, key);
-              movieToAdd = addUserMovie(movieToAdd, movieChoice);
-
-              UserMovie *existingMatch = malloc(sizeof(UserMovie));
-              existingMatch = NULL;
-              existingMatch = titleSearchExactUser(userRoot, existingMatch, movieToAdd->lowerTitle);
-
-              /* check if movie exists already */
-              /* Note, movie must match in title, date purchased and ownership type */
-              if (existingMatch == NULL) {
-                free(existingMatch);
-                userRoot = insertUser(userRoot, movieToAdd);
-              }
-              else {
-                free(existingMatch);
-                printf("\n\nError, duplicate entry in user list\n");
-                printf("Returning to menu\n\n");
-                menuChoice = 'a';
-                continue;
-              }
             }
           }
         }
@@ -261,6 +272,13 @@ int main(void) {
 
     /* Remove */
     if (menuChoice == '2') {
+      if (userRoot == NULL) {
+        printf("\n\n");
+        printf("Error, user list is empty, unable to remove\n");
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
       UserMovie *movieToRemove = malloc(sizeof(UserMovie));
       movieToRemove = NULL;
       preOrderUser(userRoot);
@@ -292,6 +310,13 @@ int main(void) {
 
     /* Modify */
     if (menuChoice == '3') {
+      if (userRoot == NULL) {
+        printf("\n\n");
+        printf("Error, user list is empty, unable to modify\n");
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
       UserMovie *movieToModify = malloc(sizeof(UserMovie));
       movieToModify = NULL;
       preOrderUser(userRoot);
@@ -410,6 +435,13 @@ int main(void) {
 
     /* Save Changes */
     if (menuChoice == '4') {
+      if (userRoot == NULL) {
+        printf("\n\n");
+        printf("Error, user list is empty, unable to save\n");
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
       FILE *fpS;
       fpS = fopen(userFilename, "w");
       saveFile(fpS, userRoot);
@@ -421,6 +453,13 @@ int main(void) {
 
     /* Print List */
     if (menuChoice == '5') {
+      if (userRoot == NULL) {
+        printf("\n\n");
+        printf("Error, user list is empty, unable to print\n");
+        printf("\nReturning to Menu\n");
+        menuChoice = 'a';
+        continue;
+      }
       printf("\n\n");
       preOrderUser(userRoot);
       printf("\n\n");

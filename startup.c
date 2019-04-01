@@ -515,8 +515,7 @@ UserMovie *readUserFile(char *filename) {
   fp = fopen(filename, "r");
 
   if (fp == NULL) {
-   printf("%s\n", "Error in opening user file");
-   return(NULL);
+   return NULL;
   }
 
   int numMovies = 0;
