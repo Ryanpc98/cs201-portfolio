@@ -8,8 +8,8 @@
 ****************************************************************************
 ## GETTING STARTED:
 
-  Go to: [HERE](https://datasets.imdbws.com/)
-  and download the title.basics.tsv.gz file
+  Go to [here](https://datasets.imdbws.com/)
+  and download the *title.basics.tsv.gz* file
 
   One the file is downloaded, ensure that the title.basics.tsv file is in
   the same directory as your program
@@ -22,53 +22,59 @@
 ## BASIC TIPS:
 
 ### When presented with a screen like this:
-
-  *0: Indiana Jones and the Temple of Doom(1984)
+  ```
+  0: Indiana Jones and the Temple of Doom(1984)
        Owned digitally
        Aquired: 07/01/7722
-  *1: Avengers: Age of Ultron(2015)
+  1: Avengers: Age of Ultron(2015)
        Owned digitally
        Aquired: 12/12/1234
        .
        .
        .
-  *8: RoboCop 4(1994)
+  8: RoboCop 4(1994)
        Owned digitally
        Aquired: 04/20/1969
-  *9: Star Trek World Tour(1998)
+  9: Star Trek World Tour(1998)
        Owned digitally
        Aquired: 12/12/3456
 
-    Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit:*
+    Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit:
+    ```
 
   Make sure that you don't pass up the movie you want or you'll have to go all the way back around.
 
 
 ### Be sure to take advantage of these options:
-
-  *1: Filter Results by Genre
-   2: Filter Results by Release Year
-   3: Filter Results by Runtime*
+  ```
+  1: Filter Results by Genre
+  2: Filter Results by Release Year
+  3: Filter Results by Runtime
+  ```
 
    They can save you a lot of trouble by narrowing down the pages of movies you have to sift through.
 
 
 ### Be sure to read output messages carefully:
 
-   *Are you looking for an existing list? (y/n):*
+  ```
+  Are you looking for an existing list? (y/n):
 
-   *(Please enter in mm/dd/yyyy format)*
+  (Please enter in mm/dd/yyyy format)*
 
-   *Enter a range of years to search by in the format (xxxx,yyyy)
-   With xxxx being the lower of the two years
-   If you want to search for a single year, enter the same year twice*
+  Enter a range of years to search by in the format (xxxx,yyyy)
+  With xxxx being the lower of the two years
+  If you want to search for a single year, enter the same year twice
+  ```
 
    Many contain important questions or formatting guidelines and ignoring what they say can either cause unexpected behavior or cause you to have to re-input information.
 
 ### Duplicates are allowed in the user list to an extent:
 
-   *Error, duplicate entry in user list
-   Returning to menu*
+  ```
+  Error, duplicate entry in user list
+  Returning to menu
+  ```
 
    You can have the same movie in the user list as many times as you want, but they just cannot match exactly.
     i.e. They cannot have the same ownershipType and dateAquired
