@@ -9,7 +9,7 @@
 /******************************************************************************/
 
 /* Allows the user to select a title from search to add to their list */
-UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice) {
+UserMovie *addUserMovie(UserMovie *newUserMovie, Movie *movieChoice) {
   char tempChar;
   newUserMovie = malloc(sizeof(UserMovie));
   newUserMovie->tconst = movieChoice->tconst;

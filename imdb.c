@@ -109,6 +109,7 @@ int main(void) {
           if (menuChoice == '1') {
             char genreChoice;
             Movie *genreMatches = NULL;
+            printf("\n\n");
             printf("Please Select A Genre to Filter By:\n");
             printf("a: Action\nb: Adventure\nc: Adult\nd: Animation\ne: Biography\nf: Comedy\ng: Crime\nh: Documentary\n");
             printf("i: Drama\nj: Family\nk: Fantasy\nl: Film-Noir\nm: Game-Show\nn: History\no: Horror\np: Music\nq: Musical\n");
@@ -119,7 +120,6 @@ int main(void) {
 
             genreMatches = genreFilter(searchMatches, genreMatches, genreChoice);
             searchMatches = genreMatches;
-            free(genreMatches);
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
@@ -141,6 +141,7 @@ int main(void) {
             }
             Movie *yearMatches = NULL;
             while(lower > higher) {
+              printf("\n\n");
               printf("Enter a range of years to search by in the format (xxxx,yyyy)\n");
               printf("With xxxx being the lower of the two years\n");
               printf("If you want to search for a single year, enter the same year twice\n");
@@ -165,7 +166,6 @@ int main(void) {
             }
             yearMatches = yearFilter(searchMatches, yearMatches, lower, higher);
             searchMatches = yearMatches;
-            free(yearMatches);
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
@@ -187,6 +187,7 @@ int main(void) {
             }
             Movie *rtMatches = NULL;
             while(lower > higher) {
+              printf("\n\n");
               printf("Enter a range of runtimes (in minutes) to search by in the format (xxx,yyy)\n");
               printf("With xxx being the lower of the two runtimes\n");
               printf("If you want to search for a single runtime, enter the same value twice\n");
@@ -211,7 +212,6 @@ int main(void) {
             }
             rtMatches = rtFilter(searchMatches, rtMatches, lower, higher);
             searchMatches = rtMatches;
-            free(rtMatches);
             printf("\n\n");
             preOrder(searchMatches);
             printf("\n\n");
@@ -220,7 +220,7 @@ int main(void) {
 
           /* Add Movie */
           else if (menuChoice == '4') {
-            //movieToAdd = selectTitleToAdd(searchMatches);
+            //movieToAdd = addUserMovie(searchMatches);
             int key = MorrisTraversal(searchMatches);
             if (key == -1) {
               printf("\nReturning to Menu\n");
@@ -232,7 +232,7 @@ int main(void) {
             }
             else if (key >= 0) {
               movieChoice = MorrisTraversalFind(searchMatches, key);
-              movieToAdd = selectTitleToAdd(movieToAdd, movieChoice);
+              movieToAdd = addUserMovie(movieToAdd, movieChoice);
 
               UserMovie *existingMatch = malloc(sizeof(UserMovie));
               existingMatch = NULL;
@@ -272,6 +272,7 @@ int main(void) {
         continue;
       }
       else if (key == -2) {
+        printf("\n\n");
         key = MorrisTraversalUser(userRoot);
       }
       else if (key >= 0) {
@@ -316,7 +317,7 @@ int main(void) {
       }
 
       /* Menu to select attribute to modify */
-      printf("%s\n", movieToModify->lowerTitle);
+      printf("\n\n");
       printf("Select and Attribute to Modify or Press 0 to Quit: \n");
       printf("     1: Ownership Type\n");
       printf("     2: Date Purchased\n");
@@ -338,6 +339,7 @@ int main(void) {
       /* Modify Ownership type */
       else if (menuChoice == '1') {
         char tempOwn;
+        printf("\n\n");
         printf("Please enter a new ownership type: \n");
         printf("(p for phyiscal or d for digital)\n");
         scanf("%c", &tempOwn);
@@ -358,6 +360,7 @@ int main(void) {
           tempDate[i] = '\0';
         }
         char tempChar;
+        printf("\n\n");
         printf("Please enter a new date: \n");
         printf("(Please enter in mm/dd/yyyy format)\n");
         for (int i = 0; i < 10; i++) {
@@ -379,6 +382,7 @@ int main(void) {
           }
         }
         while(1) {
+          printf("\n\n");
           printf("Invalid date, please try again\n");
           printf("When did you purchase this movie?: \n");
           printf("(Please enter in mm/dd/yyyy format)\n");
@@ -425,6 +429,7 @@ int main(void) {
 
     /* Quit w/out Saving */
     if (menuChoice == '6') {
+      printf("\n\n");
       printf("Are you sure you want to quit?: (y/n) ");
       scanf("%c", &menuChoice);
       clearIn();
@@ -448,6 +453,7 @@ int main(void) {
 
     /* Save and Quit */
     if (menuChoice == '7') {
+      printf("\n\n");
       printf("Are you sure you want to quit?: (y/n) ");
       scanf("%c", &menuChoice);
       clearIn();

@@ -124,6 +124,6 @@ void printRt(Movie *movieList, int lower, int higher);
 /* user.c */
 /* Contains all functions used to manage user information */
 
-UserMovie *selectTitleToAdd(UserMovie *newUserMovie, Movie *movieChoice);
+UserMovie *addUserMovie(UserMovie *newUserMovie, Movie *movieChoice);
 
 void saveFile(FILE *fp, UserMovie *root);
