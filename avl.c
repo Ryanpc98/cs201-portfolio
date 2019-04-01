@@ -437,7 +437,8 @@ int MorrisTraversal(Movie* root) {
   while (current != NULL) {
     if (current->left == NULL) {
       if (key == -3) {
-        printf("%d: %s(1)\n", i, current->lowerTitle);
+        printf("%d: %s(%d)\n", i, current->primaryTitle, current->startYear);
+        printf("     aka: %s\n", current->originalTitle);
       }
       i++;
       current = current->right;
@@ -463,7 +464,8 @@ int MorrisTraversal(Movie* root) {
       else {
         pre->right = NULL;
         if (key == -3) {
-          printf("%d: %s(2)\n", i, current->lowerTitle);
+          printf("%d: %s(%d)\n", i, current->primaryTitle, current->startYear);
+          printf("     aka: %s\n", current->originalTitle);
         }
         i++;
         current = current->right;
@@ -522,8 +524,8 @@ int MorrisTraversal(Movie* root) {
 }
 
 int MorrisTraversalUser(UserMovie* root) {
-    UserMovie *current, *pre;
-    char tempChar;
+  UserMovie *current, *pre;
+  char tempChar;
 
   if (root == NULL) {
     return -3;
@@ -532,86 +534,105 @@ int MorrisTraversalUser(UserMovie* root) {
   current = root;
   int i = 0; // iterations in current set
   int j = 0; // number of sets
-  int x = 0;
+  int key = -3;
   while (current != NULL) {
-    if (i < 10) {
-      if (current->left == NULL) {
-        printf("%d(%d): %s(1)\n", x, i, current->lowerTitle);
-        i++;
-        x++;
-        current = current->right;
-      }
-      else {
-
-      /* Find the inorder predecessor of current */
-        pre = current->left;
-        while (pre->right != NULL && pre->right != current) {
-          pre = pre->right;
+    if (current->left == NULL) {
+      if (key == -3) {
+        printf("%d: %s(%d)\n", i, current->title, current->startYear);
+        if (current->ownershipType == 'p') {
+          printf("     Owned phyiscally\n");
         }
-
-        /* Make current as right child of its inorder
-        predecessor */
-        if (pre->right == NULL) {
-          pre->right = current;
-          current = current->left;
-        }
-
-        /* Revert the changes made in if part to restore
-        the original tree i.e., fix the right child
-        of predecssor */
         else {
-          pre->right = NULL;
-          printf("%d(%d): %s(2)\n", x, i, current->lowerTitle);
-          i++;
-          x++;
-          current = current->right;
-        } /* End of if condition pre->right == NULL */
-      } /* End of if condition current->left == NULL*/
-      if (i == 10) {
-        printf("\n\n\n");
+          printf("     Owned digitally\n");
+        }
+        printf("     Aquired: %.2d/%.2d/%.4d\n", current->mAquired, current->dAquired, current->yAquired);
+      }
+      i++;
+      current = current->right;
+    }
+    else {
+
+    /* Find the inorder predecessor of current */
+      pre = current->left;
+      while (pre->right != NULL && pre->right != current) {
+        pre = pre->right;
+      }
+
+      /* Make current as right child of its inorder
+      predecessor */
+      if (pre->right == NULL) {
+        pre->right = current;
+        current = current->left;
+      }
+
+      /* Revert the changes made in if part to restore
+      the original tree i.e., fix the right child
+      of predecssor */
+      else {
+        pre->right = NULL;
+        if (key == -3) {
+          printf("%d: %s(%d)\n", i, current->title, current->startYear);
+          if (current->ownershipType == 'p') {
+            printf("     Owned phyiscally\n");
+          }
+          else {
+            printf("     Owned digitally\n");
+          }
+          printf("     Aquired: %.2d/%.2d/%.4d\n", current->mAquired, current->dAquired, current->yAquired);
+        }
+        i++;
+        current = current->right;
+      } /* End of if condition pre->right == NULL */
+    } /* End of if condition current->left == NULL*/
+    if (i == 10 && key == -3) {
+      printf("\n\n\n");
+      printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
+      scanf("%c", &tempChar);
+      clearIn();
+      while (tempChar != 'n' && tempChar != 'q' && !isdigit(tempChar)) {
+        printf("\n\n");
+        printf("Error, please try again\n");
         printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
         scanf("%c", &tempChar);
         clearIn();
-        while (tempChar != 'n' && tempChar != 'q' && !isdigit(tempChar)) {
-          printf("\n\n");
-          printf("Error, please try again\n");
-          printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
-          scanf("%c", &tempChar);
-          clearIn();
-        }
-        if (tempChar == 'n') {
-          j++;
-          i = 0;
-        }
-        else if (tempChar == 'q') {
-          return -1;
-        }
-        else {
-          return ((tempChar - '0') + (10 * j));
-        }
+      }
+      if (tempChar == 'n') {
+        j++;
+        i = 0;
+      }
+      else if (tempChar == 'q') {
+        key = -1;
+      }
+      else {
+        key = ((tempChar - '0') + (10 * j));
       }
     }
   } /* End of while */
-  printf("\n\n\n");
-  printf("All nodes printed\n");
-  printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
-  scanf("%c", &tempChar);
-  clearIn();
-  while (tempChar != 'n' && tempChar != 'q' && !isdigit(tempChar)) {
-    printf("\n\n");
-    printf("Error, please try again\n");
-    printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
+  if (key == -3) {
+    printf("\n\n\n");
+    printf("All nodes printed\n");
+    printf("Enter the number or a movie to select it, press 'n' to start over, or press 'q' to quit: \n");
     scanf("%c", &tempChar);
     clearIn();
-  }
-  if (tempChar == 'n') {
-    return -2;
-  }
-  else if (tempChar == 'q') {
-    return -1;
+    while (tempChar != 'n' && tempChar != 'q' && !isdigit(tempChar)) {
+      printf("\n\n");
+      printf("Error, please try again\n");
+      printf("Enter the number or a movie to select it, press 'n' to print next 10, or press 'q' to quit: \n");
+      scanf("%c", &tempChar);
+      clearIn();
+    }
+    if (tempChar == 'n') {
+      return -2;
+    }
+    else if (tempChar == 'q') {
+      return -1;
+    }
+    else {
+      return ((tempChar - '0') + (10 * j));
+    }
   }
   else {
-    return ((tempChar - '0') + (10 * j));
+    return key;
   }
 }
 
@@ -632,9 +653,7 @@ Movie *MorrisTraversalFind(Movie* root, int choice) {
   int i = 0; // iterations in current set
   while (current != NULL) {
     if (current->left == NULL) {
-      printf("%d-%s\n", i, current->lowerTitle);
       if (i == choice) {
-        printf("match\n");
         match = current;
       }
       i++;
@@ -660,9 +679,7 @@ Movie *MorrisTraversalFind(Movie* root, int choice) {
       of predecssor */
       else {
         pre->right = NULL;
-        printf("%d-%s\n", i, current->lowerTitle);
         if (i == choice) {
-          printf("match\n");
           match = current;
         }
         i++;
@@ -686,7 +703,6 @@ UserMovie *MorrisTraversalFindUser(UserMovie* root, int choice) {
   while (current != NULL) {
     if (current->left == NULL) {
       if (i == choice) {
-        printf("match: %d-%s", i, current->lowerTitle);
         match = current;
       }
       i++;
@@ -713,7 +729,6 @@ UserMovie *MorrisTraversalFindUser(UserMovie* root, int choice) {
       else {
         pre->right = NULL;
         if (i == choice) {
-          printf("match: %d-%s", i, current->lowerTitle);
           match = current;
         }
         i++;
