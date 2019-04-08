@@ -68,6 +68,7 @@ int userLogin(char *userFilename) {
 
    if (choice == 'y') {
      fclose(fp);
+     printf("file closed\n");
      return 1;
    }
    else if (choice == 'n') {
